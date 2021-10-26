@@ -25,11 +25,11 @@
 
 ----------
 
-# project_name
+# xayn_swipe_it
 
-[![Pub](https://img.shields.io/pub/v/project_name.svg)](https://pub.dartlang.org/packages/project_name)
-[![codecov](https://codecov.io/gh/xaynetwork/flutter-open-source-repo-template/branch/main/graph/badge.svg)](https://codecov.io/gh/xaynetwork/flutter-open-source-repo-template)
-[![Build Status](https://github.com/xaynetwork/flutter-open-source-repo-template/actions/workflows/flutter_post_merge.yaml/badge.svg)](https://github.com/xaynetwork/flutter-open-source-repo-template/actions)
+[![Pub](https://img.shields.io/pub/v/xayn_swipe_it.svg)](https://pub.dartlang.org/packages/xayn_swipe_it)
+[![codecov](https://codecov.io/gh/xaynetwork/xayn_swipe_it/branch/main/graph/badge.svg)](https://codecov.io/gh/xaynetwork/xayn_swipe_it)
+[![Build Status](https://github.com/xaynetwork/xayn_swipe_it/actions/workflows/flutter_post_merge.yaml/badge.svg)](https://github.com/xaynetwork/xayn_swipe_it/actions)
 
 Short description of the project: What, Why, When and How :rofl:
 
@@ -58,12 +58,12 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  project_name: `latest version`
+  xayn_swipe_it: `latest version`
 ```
 
 after that, shoot it on the command line:
 
-```css
+```shell
 $ flutter pub get
 ```
 
@@ -88,10 +88,9 @@ Use case #3 (short description)
 	// add some code with ninja-comments here
 ```
 
- - please also give a try to the [example app](../main/example/) :stuck_out_tongue_winking_eye:
- - check full [documentation here](../documentation/)
+ - try out the [example](./example/lib/main.dart)
 
-[top :arrow_heading_up:](#project_name)
+[top :arrow_heading_up:](#xayn_swipe_it)
 
 ----------
 
@@ -107,7 +106,7 @@ Curious how it will be looking? :smirk:
  | case description #3      | case description #4      |
  | <img width="280" src="../main/visuals/tea.gif"> | <img width="280" src="../main/visuals/cosmos.gif"> |
 
-[top :arrow_heading_up:](#project_name)
+[top :arrow_heading_up:](#xayn_swipe_it)
 
 ----------
 
@@ -121,7 +120,7 @@ Curious how it will be looking? :smirk:
 | `isEnabled`      | `bool`   	 	| `true`    	| Responsible for showing component as enabled.|
 | `key` 		   | `Key`          | `null`        | Controls how one widget replaces another widget in the tree. |
 
-[top :arrow_heading_up:](#project_name)
+[top :arrow_heading_up:](#xayn_swipe_it)
 
 ----------
 
@@ -142,11 +141,11 @@ Describe here well known problems and how they can be solved.
 We're more than happy to accept pull requests :muscle:
 
  - check our [contributing](../main/.github/contributing.md) page
- - found a bug or have a question? Please [create an issue](https://github.com/xaynetwork/flutter-open-source-repo-template/issues/new/choose).
+ - found a bug or have a question? Please [create an issue](https://github.com/xaynetwork/xayn_swipe_it/issues/new/choose).
 
 
 
-[top :arrow_heading_up:](#project_name)
+[top :arrow_heading_up:](#xayn_swipe_it)
 
 ----------
 
@@ -155,7 +154,7 @@ We're more than happy to accept pull requests :muscle:
 ## License :scroll:
 **project_name** is licensed under `Apache 2`. View [license](../main/LICENSE).
 
-[top :arrow_heading_up:](#project_name)
+[top :arrow_heading_up:](#xayn_swipe_it)
 
 ----------
 
