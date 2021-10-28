@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:swipe/swipe.dart';
+import 'package:swipe/xayn_swipe_it.dart';
 
 void main() {
   runApp(const MyApp());
