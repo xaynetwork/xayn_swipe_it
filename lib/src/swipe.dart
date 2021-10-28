@@ -17,32 +17,170 @@ typedef OptionBuilder<Option> = SwipeOptionContainer<Option> Function(
 const Offset _kSomewhatLeft = Offset(-1.0, .0);
 const Offset _kSomewhatRight = Offset(1.0, .0);
 
+/// Wraps its children and adds UI handlers to swipe them to the left and/or right.
+///
+/// - [child] is the content which should be the swipe target.
+///
+/// - [selectedOptions] can optionally be used to pre-select any `Option`
+///   from either [optionsLeft] or [optionsRight].
+///
+/// - [optionBuilder] can be used to customize a single `Option`
+///   it expects a [SwipeOptionContainer] in return.
+///
+/// - [optionsLeft] is an `Iterable` representing the left-side `Option`s.
+///
+/// - [optionsRight] is an `Iterable` representing the right-side `Option`s.
+///
+/// - [onOptionTap] is a handler which triggers whenever an `Option` is tapped.
+///
+/// - [swipeAreaBuilder] by default, no UI elements are displayed to
+///   indicate that the child can indeed be swiped.
+///   If you want a custom UI to overlay the child, then provide this builder.
+///
+/// - [gestureArea] by default, the whole of [child] is covered with a
+///   [GestureDetector], if you want a custom area, then provide this parameter.
+///   (for example, only allow gestures on the middle-area of the child)
+///
+/// - [closeAnimationDuration] the `Duration` of the closing animation.
+///
+/// - [stayOpenedDuration] the `Duration` of the idle stay open time.
+///
+/// - [waitBeforeClosingDuration] the `Duration` that this widget waits before
+///   it closes any open swipe options, after the user tapped on one.
+///
+/// - [expandSingleOptionDuration] the `Duration` for the transition animation
+///   when selecting an option. The option then transitions to overtake the
+///   fully available width, masking the other non-selected options.
+///
+/// - [closeAnimationCurve] the `Curve` which is used for the closing animation.
+///
+/// - [borderRadius] can be used to show an optional border on the [child].
+///
+/// - [clipBehavior] specifies the clipping of the [child], the default value
+///   is [Clip.antiAlias].
+///
+/// - [minDragDistanceToOpen] a value which defines how far the user needs to
+///   drag-open the swipe options:
+///   - if not far enough, then on release the options close
+///   - if far enough, the options animate to fully open and the options
+///     are presented.
+///   [minDragDistanceToOpen] expects a value between 0.0 and 1.0,
+///   1.0 represents the full available width, while 0.0 is zero width.
+///
+///  - [opensToPosition] a value indicating to what percentage the options
+///    should open to.
+///    [opensToPosition] expects a value between 0.0 and 1.0,
+///    1.0 represents the full available width, while 0.0 is zero width.
+///
+///  - [onController] presents the [SwipeController] that is attached to this
+///    widget.
+///
+///  - [onFling] is a handler which expects an `Option` in return.
+///    when the user flings, then this option will be auto-selected.
+///
+///  - [autoToggleSelection] when true, then the [SwipeController] will
+///    notify the selection.
+///
+/// ```dart
+/// Swipe<Option>(
+///   onOptionTap: (option) => print('tapped! $option'),
+///   onFling: (options) => options.first,
+///   child: const ColoredBox(
+///     color: Colors.red,
+///       child: Padding(
+///         padding: EdgeInsets.all(24.0),
+///         child: Text('Swipe me!'),
+///       ),
+///     ),
+///   ),
+///   borderRadius: const BorderRadius.vertical(top: Radius.circular(48)),
+///   optionsLeft: const [Option.one, Option.three, Option.two],
+///   optionsRight: const [Option.three],
+/// )
+/// ```
 class Swipe<Option> extends StatefulWidget {
-  /// The [child] contained by the swipe.
+  /// the content which should be the swipe target
   final Widget child;
+
+  /// optionally used to pre-select any `Option`
+  /// from either [optionsLeft] or [optionsRight].
+  ///
   final Set<Option> selectedOptions;
+
+  /// can be used to customize a single `Option`
+  /// it expects a [SwipeOptionContainer] in return.
   final OptionBuilder<Option> optionBuilder;
-  final Iterable<Option> optionsLeft, optionsRight;
+
+  /// an `Iterable` representing the left-side `Option`s.
+  final Iterable<Option> optionsLeft;
+
+  /// an `Iterable` representing the right-side `Option`s.
+  final Iterable<Option> optionsRight;
+
+  /// a handler which triggers whenever an `Option` is tapped.
   final OnOptionTap<Option>? onOptionTap;
+
+  /// by default, no UI elements are displayed to
+  /// indicate that the child can indeed be swiped.
+  /// If you want a custom UI to overlay the child, then provide this builder.
   final WidgetBuilder? swipeAreaBuilder;
+
+  /// by default, the whole of [child] is covered with a
+  /// [GestureDetector], if you want a custom area, then provide this parameter.
+  /// (for example, only allow gestures on the middle-area of the child)
   final Rect gestureArea;
+
+  /// the `Duration` of the closing animation.
   final Duration closeAnimationDuration;
+
+  /// the `Duration` of the idle stay open time.
   final Duration stayOpenedDuration;
+
+  /// the `Duration` that this widget waits before
+  /// it closes any open swipe options, after the user tapped on one.
   final Duration waitBeforeClosingDuration;
+
+  /// the `Duration` for the transition animation
+  /// when selecting an option. The option then transitions to overtake the
+  /// fully available width, masking the other non-selected options.
   final Duration expandSingleOptionDuration;
+
+  /// the `Curve` which is used for the closing animation.
   final Curve closeAnimationCurve;
+
+  /// can be used to show an optional border on the [child].
   final BorderRadiusGeometry? borderRadius;
 
-  /// The clip behavior.
-  ///
-  /// Defaults to [Clip.antiAlias].
+  /// specifies the clipping of the [child], the default value
+  /// is [Clip.antiAlias].
   final Clip clipBehavior;
+
+  /// a value which defines how far the user needs to
+  /// drag-open the swipe options:
+  ///   - if not far enough, then on release the options close
+  ///   - if far enough, the options animate to fully open and the options
+  ///     are presented.
+  /// [minDragDistanceToOpen] expects a value between 0.0 and 1.0,
+  /// 1.0 represents the full available width, while 0.0 is zero width.
   final double minDragDistanceToOpen;
+
+  /// a value indicating to what percentage the options
+  /// should open to.
+  /// [opensToPosition] expects a value between 0.0 and 1.0,
+  /// 1.0 represents the full available width, while 0.0 is zero width.
   final double opensToPosition;
+
+  /// presents the [SwipeController] that is attached to this widget.
   final OnController<Option>? onController;
+
+  /// a handler which expects an `Option` in return.
+  /// when the user flings, then this option will be auto-selected.
   final OnFling<Option>? onFling;
+
+  /// when true, then the [SwipeController] will notify the selection.
   final bool autoToggleSelection;
 
+  /// The main constructor to create a new `Swipe` widget.
   const Swipe({
     Key? key,
     required this.child,
