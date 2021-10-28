@@ -9,6 +9,7 @@ void main() {
   runApp(const MyApp());
 }
 
+/// A list of swipe options.
 enum Option { one, two, three, four }
 
 class MyApp extends StatelessWidget {

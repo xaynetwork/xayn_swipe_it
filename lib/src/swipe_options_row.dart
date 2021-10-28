@@ -2,13 +2,27 @@ import 'package:flutter/widgets.dart';
 import 'package:swipe/src/swipe.dart';
 import 'package:swipe/src/swipe_option_container.dart';
 
+/// @private
+/// An internal widget, which displays `Option`s in a row and is responsible
+/// for handling any animations in-between its presented options.
+@protected
 class SwipeOptionsRow<Option> extends StatefulWidget {
+  /// A list of child widgets, representing individual `Option`s.
   final List<SwipeOptionContainer<Option>> children;
+
+  /// A handler, which triggers whenever an `Option` is tapped.
   final OnOptionTap<Option>? onOptionTap;
+
+  /// If applicable, indicate which `Option` should be highlighted.
   final Option? highlightedOption;
+
+  /// A callback which triggers when the internal animation ends.
   final VoidCallback? onAnimationEnd;
+
+  /// The amount of time in which the animation plays.
   final Duration expandSingleOptionDuration;
 
+  /// Creates a new `SwipeOptionsRow`.
   const SwipeOptionsRow({
     Key? key,
     required this.children,

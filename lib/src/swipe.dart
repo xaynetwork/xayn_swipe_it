@@ -1,16 +1,31 @@
+library swipe;
+
 import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:swipe/src/swipe_controller.dart';
 import 'package:swipe/src/swipe_option_container.dart';
 import 'package:swipe/src/swipe_options_row.dart';
 
+part 'swipe_controller.dart';
+
+/// A handler which passes a reference to the [SwipeController] which
+/// is associated to this widget.
 typedef OnController<Option> = void Function(SwipeController<Option>);
+
+/// A handler which triggers when the user applies a `fling` gesture.
+/// It expects an `Option` as return value, and present a `List` of
+/// all the available options in the current direction.
+/// The `Option` that is returned, will then be selected.
 typedef OnFling<Option> = Option? Function(Iterable<Option>);
+
+/// A handler which invokes whenever the user taps an `Option`
 typedef OnOptionTap<Option> = void Function(Option);
+
+/// A builder which can optionally be implemented, if you desire a custom
+/// widget to display an `Option`.
 typedef OptionBuilder<Option> = SwipeOptionContainer<Option> Function(
     BuildContext, Option, int, bool);
 
@@ -287,7 +302,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
     }
 
     controller.addListener(() {
-      final optionToSelect = controller.optionToSelect;
+      final optionToSelect = controller._optionToSelect;
 
       if (optionToSelect != null) {
         _openAndSelectOption(optionToSelect);
