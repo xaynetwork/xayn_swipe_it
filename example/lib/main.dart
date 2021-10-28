@@ -2,8 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-import 'package:swipe/xayn_swipe_it.dart';
+import 'package:xayn_swipe_it/xayn_swipe_it.dart';
 
 void main() {
   runApp(const MyApp());

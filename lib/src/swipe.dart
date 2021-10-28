@@ -6,8 +6,8 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:swipe/src/swipe_option_container.dart';
-import 'package:swipe/src/swipe_options_row.dart';
+import 'package:xayn_swipe_it/src/swipe_option_container.dart';
+import 'package:xayn_swipe_it/src/swipe_options_row.dart';
 
 part 'swipe_controller.dart';
 

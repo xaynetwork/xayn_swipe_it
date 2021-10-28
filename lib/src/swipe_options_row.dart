@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:swipe/src/swipe.dart';
-import 'package:swipe/src/swipe_option_container.dart';
+import 'package:xayn_swipe_it/src/swipe.dart';
+import 'package:xayn_swipe_it/src/swipe_option_container.dart';
 
 /// @private
 /// An internal widget, which displays `Option`s in a row and is responsible
