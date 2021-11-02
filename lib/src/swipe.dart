@@ -230,7 +230,6 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   late final AnimationController animationController;
   List<SwipeOptionContainer<Option>> builtOptionsLeft = const [],
       builtOptionsRight = const [];
-  bool _isOpened = false;
   Offset _offset = const Offset(.0, .0);
   Timer? _stayOpenedTimer;
   Option? _tappedLeft, _tappedRight;
@@ -270,6 +269,8 @@ class _SwipeState<Option> extends State<Swipe<Option>>
 
   @override
   void didUpdateWidget(Swipe<Option> oldWidget) {
+    if (!identical(oldWidget.key, widget.key)) _initialize();
+
     if (widget.optionsLeft != oldWidget.optionsLeft ||
         widget.optionsRight != oldWidget.optionsRight) {
       _rebuildOptions();
@@ -292,6 +293,12 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   @override
   void initState() {
     animationController = AnimationController(vsync: this);
+    _initialize();
+    super.initState();
+  }
+
+  void _initialize() {
+    controller._clearSelectedOptions();
 
     for (final option in widget.selectedOptions) {
       controller.updateSelection(option: option, isSelected: true);
@@ -312,8 +319,6 @@ class _SwipeState<Option> extends State<Swipe<Option>>
     });
 
     _rebuildOptions();
-
-    super.initState();
   }
 
   void _rebuildOptions() {
@@ -343,7 +348,8 @@ class _SwipeState<Option> extends State<Swipe<Option>>
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onHorizontalDragUpdate: (details) {
-          final isNotIdle = _isOpened || animationController.isAnimating;
+          final isNotIdle =
+              controller.isOpened || animationController.isAnimating;
           final canSwipeLeftToRight =
               widget.optionsLeft.isEmpty && details.delta.dx > .0;
           final canSwipeRightToLeft =
@@ -447,7 +453,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   }
 
   Future<void> _closeOptions([_]) async {
-    if (_isOpened) {
+    if (controller.isOpened) {
       _stayOpenedTimer?.cancel();
 
       await animationController.animateTo(
@@ -456,9 +462,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
         curve: widget.closeAnimationCurve,
       );
 
-      setState(() {
-        _isOpened = false;
-      });
+      controller._updateIsOpened(false);
     }
   }
 
@@ -469,10 +473,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
       _offset = _kSomewhatLeft;
     }
 
-    setState(() {
-      _isOpened = true;
-    });
-
+    controller._updateIsOpened(true);
     await animationController.animateTo(1.0,
         duration: const Duration(milliseconds: 350));
 
@@ -482,7 +483,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   Future<void> Function(DragEndDetails) _onDragEnd(BoxConstraints constraints,
           {Option? optionToSelect}) =>
       (DragEndDetails details) async {
-        if (_isOpened) {
+        if (controller.isOpened) {
           return;
         }
 
@@ -494,7 +495,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
         final options =
             _offset.dx >= .0 ? widget.optionsLeft : widget.optionsRight;
 
-        setState(() => _isOpened = isOpened);
+        controller._updateIsOpened(isOpened);
 
         final targetPosition = isOpened ? widget.opensToPosition : .0;
 

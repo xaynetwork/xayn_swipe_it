@@ -6,7 +6,8 @@ part of swipe;
 /// the attached widget, to show a specific `Option`.
 class SwipeController<Option> extends ChangeNotifier {
   Option? __optionToSelect;
-  Set<Option> _selectedOptions = const {};
+  bool __isOpened = false;
+  Set<Option> _selectedOptions = <Option>{};
 
   /// Constructs a new `Swipe` controller.
   SwipeController();
@@ -34,6 +35,21 @@ class SwipeController<Option> extends ChangeNotifier {
   /// the presented [option].
   Future<void> swipeOpen(Option option) async {
     __optionToSelect = option;
+    notifyListeners();
+  }
+
+  /// when true, the options widgets are visible, else if false,
+  /// only the child is visible
+  bool get isOpened => __isOpened;
+
+  void _updateIsOpened(bool isOpened) {
+    __isOpened = isOpened;
+    notifyListeners();
+  }
+
+  /// Clear the set of selected options
+  void _clearSelectedOptions() {
+    _selectedOptions.clear();
     notifyListeners();
   }
 

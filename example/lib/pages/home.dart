@@ -62,7 +62,12 @@ class _HomeState extends State<Home> {
               ),
             );
           }
-          return const SizedBox.shrink();
+          return Center(
+            child: Text(
+              'Loading..',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          );
         });
   }
 
