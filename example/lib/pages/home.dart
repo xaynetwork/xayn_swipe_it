@@ -96,9 +96,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  buildSwipeWidget({
-    required Widget child,
-  }) async {
+  buildSwipeWidget({required Widget child}) {
     return Swipe<Option>(
       key: Key(dog.toString()),
       opensToPosition: 0.6,
