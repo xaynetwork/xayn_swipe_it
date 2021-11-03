@@ -106,7 +106,7 @@ void main() {
       await standaloneWidgetSetup(
         tester,
         widget: Swipe<Option>(
-          key: const Key('swipeOpenSelected'),
+          key: const Key('swipeOpen'),
           onController: (controller) => _controller = controller,
           optionBuilder: (_, option, index, isSelected) {
             return SwipeOptionContainer<Option>(
@@ -132,7 +132,7 @@ void main() {
       await standaloneWidgetSetup(
         tester,
         widget: Swipe<Option>(
-          key: const Key('swipeOpenSelected'),
+          key: const Key('isOpen'),
           onController: (controller) => _controller = controller,
           optionBuilder: (_, option, index, isSelected) {
             return SwipeOptionContainer<Option>(
@@ -142,43 +142,15 @@ void main() {
             );
           },
           optionsLeft: optionsLeft,
-          optionsRight: optionsLeft,
+          optionsRight: optionsRight,
           selectedOptions: {optionsLeft.first},
           child: swipeableChild,
         ),
       );
       expect(_controller.isOpened, isFalse);
-      final child = swipeableChildKeyName.findByKey();
-      await swipeLeft(tester, child);
+      await swipeLeft(tester);
       expect(_controller.isOpened, isTrue);
-      await swipeRight(tester, child);
-      expect(_controller.isOpened, isTrue);
-    });
-
-    testWidgets('isOpen', (WidgetTester tester) async {
-      await standaloneWidgetSetup(
-        tester,
-        widget: Swipe<Option>(
-          key: const Key('swipeOpenSelected'),
-          onController: (controller) => _controller = controller,
-          optionBuilder: (_, option, index, isSelected) {
-            return SwipeOptionContainer<Option>(
-              option: option,
-              color: Colors.white,
-              child: Text(option.toString()),
-            );
-          },
-          optionsLeft: optionsLeft,
-          optionsRight: optionsLeft,
-          selectedOptions: {optionsLeft.first},
-          child: swipeableChild,
-        ),
-      );
-      expect(_controller.isOpened, isFalse);
-      final child = swipeableChildKeyName.findByKey();
-      await swipeLeft(tester, child);
-      expect(_controller.isOpened, isTrue);
-      await swipeRight(tester, child);
+      await swipeRight(tester);
       expect(_controller.isOpened, isTrue);
     });
   });

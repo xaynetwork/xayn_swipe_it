@@ -32,30 +32,36 @@ enum Option { one, two, three, four }
 const optionsLeft = [Option.one, Option.two];
 const optionsRight = [Option.three, Option.four];
 
-Future<void> swipeLeft(WidgetTester tester, Finder child) async {
+Finder getSwipeableChild() {
+  final child = swipeableChildKeyName.findByKey();
+  expect(child, findsOneWidget);
+  return child;
+}
+
+Future<void> swipeLeft(WidgetTester tester) async {
   await tester.runAsync(() async {
-    await tester.drag(child, const Offset(-400, 0));
+    await tester.drag(getSwipeableChild(), const Offset(-400, 0));
     await tester.idle();
   });
 }
 
-Future<void> swipeRight(WidgetTester tester, Finder child) async {
+Future<void> swipeRight(WidgetTester tester) async {
   await tester.runAsync(() async {
-    await tester.drag(child, const Offset(400, 0));
+    await tester.drag(getSwipeableChild(), const Offset(400, 0));
     await tester.idle();
   });
 }
 
-Future<void> flingLeft(WidgetTester tester, Finder child) async {
+Future<void> flingLeft(WidgetTester tester) async {
   await tester.runAsync(() async {
-    await tester.fling(child, const Offset(-400, 0), 5000);
+    await tester.fling(getSwipeableChild(), const Offset(-400, 0), 5000);
     await tester.idle();
   });
 }
 
-Future<void> flingRight(WidgetTester tester, Finder child) async {
+Future<void> flingRight(WidgetTester tester) async {
   await tester.runAsync(() async {
-    await tester.fling(child, const Offset(400, 0), 5000);
+    await tester.fling(getSwipeableChild(), const Offset(400, 0), 5000);
     await tester.idle();
   });
 }
