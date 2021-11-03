@@ -33,7 +33,7 @@ jobs:
 
       - name: Flutter Analyze
         run: |
-          flutter analyze lib test
+          flutter analyze lib
         working-directory: ./example
 
       - name: Build release project
