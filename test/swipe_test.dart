@@ -52,79 +52,87 @@ void main() {
       expect(_newlySelectedOption, equals(notSelectedOption));
     });
 
-    testWidgets('fling', (WidgetTester tester) async {
-      Option flingCondition(options) => options.first;
+    testWidgets(
+      'fling',
+      (WidgetTester tester) async {
+        Option flingCondition(options) => options.first;
 
-      Option? _newlySelectedOption;
-      late Set<Option> notSelectedOptions = optionsRight.toSet();
-      await standaloneWidgetSetup(
-        tester,
-        widget: Swipe<Option>(
-          key: const Key('fling'),
-          onFling: flingCondition,
-          onController: (controller) => _controller = controller,
-          optionBuilder: (_, option, index, isSelected) {
-            if (notSelectedOptions.contains(option) && isSelected) {
-              _newlySelectedOption = option;
-            }
-            return SwipeOptionContainer<Option>(
-              option: option,
-              color: Colors.white,
-              child: Text(option.toString()),
-            );
-          },
-          optionsLeft: optionsLeft,
-          optionsRight: optionsRight,
-          child: swipeableChild,
-          closeAnimationDuration: animationDuration,
-          stayOpenedDuration: animationDuration,
-          waitBeforeClosingDuration: animationDuration,
-          expandSingleOptionDuration: animationDuration,
-        ),
-      );
+        Option? _newlySelectedOption;
+        late Set<Option> notSelectedOptions = optionsRight.toSet();
+        await standaloneWidgetSetup(
+          tester,
+          widget: Swipe<Option>(
+            key: const Key('fling'),
+            onFling: flingCondition,
+            onController: (controller) => _controller = controller,
+            optionBuilder: (_, option, index, isSelected) {
+              if (notSelectedOptions.contains(option) && isSelected) {
+                _newlySelectedOption = option;
+              }
+              return SwipeOptionContainer<Option>(
+                option: option,
+                color: Colors.white,
+                child: Text(option.toString()),
+              );
+            },
+            optionsLeft: optionsLeft,
+            optionsRight: optionsRight,
+            child: swipeableChild,
+            closeAnimationDuration: animationDuration,
+            stayOpenedDuration: animationDuration,
+            waitBeforeClosingDuration: animationDuration,
+            expandSingleOptionDuration: animationDuration,
+          ),
+        );
 
-      expect(_newlySelectedOption, isNull);
-      expect(_controller, isNotNull);
-      expect(_controller.isSelected(notSelectedOptions.first), isFalse);
-      expect(_controller.isOpened, isFalse);
+        expect(_newlySelectedOption, isNull);
+        expect(_controller, isNotNull);
+        expect(_controller.isSelected(notSelectedOptions.first), isFalse);
+        expect(_controller.isOpened, isFalse);
 
-      await flingLeft(tester);
-      await tester.pumpAndSettle();
-      //todo: tests should pass:
-      // expect(_controller.isOpened, isFalse);
-      // expect(_controller.isSelected(flingCondition(notSelectedOptions)), isTrue);
-      // expect(_newlySelectedOption, isNotNull);
-      // expect(_newlySelectedOption, equals(notSelectedOptions.first));
-    });
+        await flingLeft(tester);
+        await tester.pumpAndSettle();
 
-    testWidgets('waitBeforeClosingDuration', (WidgetTester tester) async {
-      await standaloneWidgetSetup(
-        tester,
-        widget: Swipe<Option>(
-          key: const Key('waitBeforeClosingDuration'),
-          onController: (controller) => _controller = controller,
-          optionBuilder: (_, option, index, isSelected) {
-            return SwipeOptionContainer<Option>(
-              option: option,
-              color: Colors.white,
-              child: Text(option.toString()),
-            );
-          },
-          optionsLeft: optionsLeft,
-          optionsRight: optionsRight,
-          child: swipeableChild,
-          closeAnimationDuration: const Duration(milliseconds: 24),
-          stayOpenedDuration: const Duration(milliseconds: 50),
-          waitBeforeClosingDuration: const Duration(milliseconds: 20),
-          expandSingleOptionDuration: const Duration(milliseconds: 12),
-        ),
-      );
-      expect(_controller.isOpened, isFalse);
-      await swipeLeft(tester);
-      expect(_controller.isOpened, isTrue);
-      await tester.pumpAndSettle();
-      //todo: tests should pass:
-      // expect(_controller.isOpened, isFalse);
-    });
+        expect(_controller.isOpened, isFalse);
+        expect(
+            _controller.isSelected(flingCondition(notSelectedOptions)), isTrue);
+        expect(_newlySelectedOption, isNotNull);
+        expect(_newlySelectedOption, equals(notSelectedOptions.first));
+      },
+      skip: true, //TODO: fix fling test
+    );
+
+    testWidgets(
+      'waitBeforeClosingDuration',
+      (WidgetTester tester) async {
+        await standaloneWidgetSetup(
+          tester,
+          widget: Swipe<Option>(
+            key: const Key('waitBeforeClosingDuration'),
+            onController: (controller) => _controller = controller,
+            optionBuilder: (_, option, index, isSelected) {
+              return SwipeOptionContainer<Option>(
+                option: option,
+                color: Colors.white,
+                child: Text(option.toString()),
+              );
+            },
+            optionsLeft: optionsLeft,
+            optionsRight: optionsRight,
+            child: swipeableChild,
+            closeAnimationDuration: const Duration(milliseconds: 24),
+            stayOpenedDuration: const Duration(milliseconds: 50),
+            waitBeforeClosingDuration: const Duration(milliseconds: 20),
+            expandSingleOptionDuration: const Duration(milliseconds: 12),
+          ),
+        );
+        expect(_controller.isOpened, isFalse);
+        await swipeLeft(tester);
+        expect(_controller.isOpened, isTrue);
+        await tester.pumpAndSettle();
+        expect(_controller.isOpened, isFalse);
+      },
+      skip: true, //TODO: fix waitBeforeClosingDuration test
+    );
   });
 }

@@ -50,7 +50,7 @@ class _LikedDogsState extends State<LikedDogs> {
             }
             return buildDogGrid(dogs);
           }
-          return const SizedBox.shrink();
+          return const Center(child: CircularProgressIndicator());
         });
   }
 

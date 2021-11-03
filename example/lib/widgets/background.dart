@@ -11,8 +11,8 @@ class Background extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return Stack(
         children: [
-          Image.network(
-            'https://img.wattpad.com/useravatar/Seunginthebuilding.128.439103.jpg',
+          Image(
+            image: const AssetImage('dog_face.jpg'),
             repeat: ImageRepeat.repeat,
             height: constraints.maxHeight,
             width: constraints.maxWidth,

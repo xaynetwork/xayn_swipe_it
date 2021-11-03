@@ -23,7 +23,6 @@ class _HomeState extends State<Home> {
 
   SwipeController<Option>? _swipeController;
   Future<Dog>? dogFuture;
-  Dog? dog;
 
   @override
   void initState() {
@@ -40,9 +39,7 @@ class _HomeState extends State<Home> {
         centerTitle: true,
       ),
       body: Background(
-        child: dogFuture == null
-            ? const SizedBox.shrink()
-            : buildDogFutureBuilder(),
+        child: buildDogFutureBuilder(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: buildFloatingActionButtons(context),
@@ -51,23 +48,16 @@ class _HomeState extends State<Home> {
 
   FutureBuilder<Dog> buildDogFutureBuilder() {
     return FutureBuilder<Dog>(
-        future: dogFuture!,
+        future: dogFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            dog = snapshot.data!;
+            final dog = snapshot.data!;
             return buildSwipeWidget(
-              child: Image.network(
-                dog!.url,
-                fit: BoxFit.cover,
-              ),
+              dog: dog,
+              child: Image.network(dog.url, fit: BoxFit.cover),
             );
           }
-          return Center(
-            child: Text(
-              'Loading..',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          );
+          return const Center(child: CircularProgressIndicator());
         });
   }
 
@@ -101,12 +91,12 @@ class _HomeState extends State<Home> {
     );
   }
 
-  buildSwipeWidget({required Widget child}) {
+  buildSwipeWidget({required Widget child, required Dog dog}) {
     return Swipe<Option>(
       key: Key(dog.toString()),
       opensToPosition: 0.6,
       onController: (controller) => _swipeController = controller,
-      onOptionTap: onOptionTap,
+      onOptionTap: (option) => onOptionTap(option, dog),
       onFling: (options) => options.first,
       child: child,
       borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -121,24 +111,24 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void onOptionTap(Option option) async {
+  void onOptionTap(Option option, Dog dog) async {
     switch (option) {
       case Option.neutral:
         _swipeController?.updateSelection(
             option: Option.dislike, isSelected: false);
         _swipeController?.updateSelection(
             option: Option.like, isSelected: false);
-        await repo.removeDog(dog!);
+        await repo.removeDog(dog);
         break;
       case Option.like:
         _swipeController?.updateSelection(option: option, isSelected: true);
-        await repo.addDog(dog!);
+        await repo.addDog(dog);
         break;
       case Option.dislike:
         _swipeController?.updateSelection(option: option, isSelected: true);
         break;
       case Option.share:
-        shareUrl(dog!.url);
+        shareUrl(dog.url);
         break;
       case Option.skip:
         setState(() {
