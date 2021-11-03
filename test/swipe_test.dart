@@ -5,10 +5,13 @@ import 'package:xayn_swipe_it/xayn_swipe_it.dart';
 import 'utils.dart';
 
 void main() {
-  setUp(() async {});
+  late SwipeController<Option> _controller;
+
+  setUp(() {
+    _controller = SwipeController<Option>();
+  });
 
   group('swipe widget: ', () {
-    late SwipeController<Option> _controller;
     testWidgets('tapping an option', (WidgetTester tester) async {
       Option? _newlySelectedOption;
       late Option notSelectedOption = optionsRight.first;
@@ -17,7 +20,7 @@ void main() {
         tester,
         widget: Swipe<Option>(
           key: const Key('fling'),
-          onController: (controller) => _controller = controller,
+          controller: _controller,
           optionBuilder: (_, option, index, isSelected) {
             if (notSelectedOption == option && isSelected) {
               _newlySelectedOption = option;
@@ -64,7 +67,7 @@ void main() {
           widget: Swipe<Option>(
             key: const Key('fling'),
             onFling: flingCondition,
-            onController: (controller) => _controller = controller,
+            controller: _controller,
             optionBuilder: (_, option, index, isSelected) {
               if (notSelectedOptions.contains(option) && isSelected) {
                 _newlySelectedOption = option;
@@ -109,7 +112,7 @@ void main() {
           tester,
           widget: Swipe<Option>(
             key: const Key('waitBeforeClosingDuration'),
-            onController: (controller) => _controller = controller,
+            controller: _controller,
             optionBuilder: (_, option, index, isSelected) {
               return SwipeOptionContainer<Option>(
                 option: option,

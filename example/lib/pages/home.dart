@@ -27,6 +27,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    _swipeController = SwipeController<Option>();
     _dogFuture = repo.fetchDog();
   }
 
@@ -112,7 +113,7 @@ class _HomeState extends State<Home> {
     return Swipe<Option>(
       key: Key(dog.url),
       opensToPosition: 0.6,
-      onController: (controller) => _swipeController = controller,
+      controller: _swipeController,
       onOptionTap: (option) => onOptionTap(option, dog),
       onFling: (options) => options.first,
       child: child,

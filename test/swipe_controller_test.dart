@@ -5,9 +5,13 @@ import 'package:xayn_swipe_it/xayn_swipe_it.dart';
 import 'utils.dart';
 
 void main() {
-  group('swipe controller: ', () {
-    late SwipeController<Option> _controller;
+  late SwipeController<Option> _controller;
 
+  setUp(() {
+    _controller = SwipeController<Option>();
+  });
+
+  group('swipe controller: ', () {
     testWidgets('update selection', (WidgetTester tester) async {
       Option? _newlySelectedOption;
       late Set<Option> selectedOptions = optionsLeft.toSet();
@@ -16,7 +20,7 @@ void main() {
         tester,
         widget: Swipe<Option>(
           key: const Key('updateSelection'),
-          onController: (controller) => _controller = controller,
+          controller: _controller,
           optionBuilder: (_, option, index, isSelected) {
             if (notSelectedOptions.contains(option) && isSelected) {
               _newlySelectedOption = option;
@@ -54,7 +58,7 @@ void main() {
         tester,
         widget: Swipe<Option>(
           key: const Key('swipeOpenNotSelected'),
-          onController: (controller) => _controller = controller,
+          controller: _controller,
           optionBuilder: (_, option, index, isSelected) {
             return SwipeOptionContainer<Option>(
               option: option,
@@ -80,7 +84,7 @@ void main() {
         tester,
         widget: Swipe<Option>(
           key: const Key('swipeOpenSelected'),
-          onController: (controller) => _controller = controller,
+          controller: _controller,
           optionBuilder: (_, option, index, isSelected) {
             return SwipeOptionContainer<Option>(
               option: option,
@@ -107,7 +111,7 @@ void main() {
         tester,
         widget: Swipe<Option>(
           key: const Key('swipeOpen'),
-          onController: (controller) => _controller = controller,
+          controller: _controller,
           optionBuilder: (_, option, index, isSelected) {
             return SwipeOptionContainer<Option>(
               option: option,
@@ -133,7 +137,7 @@ void main() {
         tester,
         widget: Swipe<Option>(
           key: const Key('isOpen'),
-          onController: (controller) => _controller = controller,
+          controller: _controller,
           optionBuilder: (_, option, index, isSelected) {
             return SwipeOptionContainer<Option>(
               option: option,

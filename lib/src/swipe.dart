@@ -12,10 +12,6 @@ import 'package:xayn_swipe_it/src/swipe_options_row.dart';
 
 part 'swipe_controller.dart';
 
-/// A handler which passes a reference to the [SwipeController] which
-/// is associated to this widget.
-typedef OnController<Option> = void Function(SwipeController<Option>);
-
 /// A handler which triggers when the user applies a `fling` gesture.
 /// It expects an `Option` as return value, and present a `List` of
 /// all the available options in the current direction.
@@ -186,8 +182,8 @@ class Swipe<Option> extends StatefulWidget {
   /// 1.0 represents the full available width, while 0.0 is zero width.
   final double opensToPosition;
 
-  /// presents the [SwipeController] that is attached to this widget.
-  final OnController<Option>? onController;
+  /// provides the widget with a [SwipeController].
+  final SwipeController<Option>? controller;
 
   /// a handler which expects an `Option` in return.
   /// when the user flings, then this option will be auto-selected.
@@ -216,7 +212,7 @@ class Swipe<Option> extends StatefulWidget {
     this.clipBehavior = Clip.antiAlias,
     this.minDragDistanceToOpen = .3,
     this.opensToPosition = .8,
-    this.onController,
+    this.controller,
     this.onFling,
     this.autoToggleSelection = true,
   }) : super(key: key);
@@ -227,7 +223,7 @@ class Swipe<Option> extends StatefulWidget {
 
 class _SwipeState<Option> extends State<Swipe<Option>>
     with SingleTickerProviderStateMixin {
-  final SwipeController<Option> controller = SwipeController<Option>();
+  late final SwipeController<Option> controller;
   late final AnimationController animationController;
   List<SwipeOptionContainer<Option>> builtOptionsLeft = const [],
       builtOptionsRight = const [];
@@ -286,7 +282,12 @@ class _SwipeState<Option> extends State<Swipe<Option>>
 
   @override
   void dispose() {
-    controller.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
+    } else {
+      controller.removeListener(_onController);
+    }
+
     animationController.dispose();
     _stayOpenedTimer?.cancel();
 
@@ -299,25 +300,23 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   void initState() {
     animationController = AnimationController(vsync: this);
 
+    controller = widget.controller ?? SwipeController<Option>();
+    controller.addListener(_onController);
+
     _updateSelectedOptions();
-
-    if (widget.onController != null) {
-      widget.onController!(controller);
-    }
-
-    controller.addListener(() {
-      final optionToSelect = controller._optionToSelect;
-
-      if (optionToSelect != null) {
-        _openAndSelectOption(optionToSelect);
-      } else {
-        setState(_rebuildOptions);
-      }
-    });
-
     _rebuildOptions();
 
     super.initState();
+  }
+
+  void _onController() {
+    final optionToSelect = controller._optionToSelect;
+
+    if (optionToSelect != null) {
+      _openAndSelectOption(optionToSelect);
+    } else {
+      setState(_rebuildOptions);
+    }
   }
 
   void _updateSelectedOptions() {
