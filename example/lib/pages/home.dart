@@ -118,7 +118,7 @@ class _HomeState extends State<Home> {
       onFling: (options) => options.first,
       child: child,
       borderRadius: const BorderRadius.all(Radius.circular(10)),
-      optionsLeft: const [Option.like, Option.skip],
+      optionsLeft: const [Option.like, Option.share],
       optionsRight: const [Option.dislike, Option.skip],
       optionBuilder: (_, option, __, isSelected) =>
           optionWidget(resolveOptionToDisplay(option), isSelected),

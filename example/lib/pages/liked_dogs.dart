@@ -57,7 +57,7 @@ class _LikedDogsState extends State<LikedDogs> {
   GridView buildDogGrid(List<Dog> dogs) {
     return GridView.builder(
       itemBuilder: (context, index) => buildSwipeWidget(
-        key: Key(dogs[index].toString()),
+        key: Key(dogs[index].url),
         dog: dogs[index],
         child: Image.network(
           dogs[index].url,
@@ -100,9 +100,7 @@ class _LikedDogsState extends State<LikedDogs> {
       case Option.share:
         shareUrl(dog.url);
         break;
-      case Option.like:
-      case Option.skip:
-      case Option.neutral:
+      default:
         break;
     }
 
