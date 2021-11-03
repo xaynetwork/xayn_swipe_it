@@ -22,12 +22,12 @@ class _HomeState extends State<Home> {
   DogRepository get repo => widget.dogRepository;
 
   SwipeController<Option>? _swipeController;
-  Future<Dog>? dogFuture;
+  Future<Dog>? _dogFuture;
 
   @override
   void initState() {
     super.initState();
-    dogFuture = repo.fetchDog();
+    _dogFuture = repo.fetchDog();
   }
 
   @override
@@ -48,7 +48,7 @@ class _HomeState extends State<Home> {
 
   FutureBuilder<Dog> buildDogFutureBuilder() {
     return FutureBuilder<Dog>(
-        future: dogFuture,
+        future: _dogFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final dog = snapshot.data!;
@@ -69,7 +69,7 @@ class _HomeState extends State<Home> {
         FloatingActionButton(
           heroTag: 'skip',
           onPressed: () => setState(() {
-            dogFuture = repo.fetchDog();
+            _dogFuture = repo.fetchDog();
           }),
           child: const Icon(Icons.refresh),
           backgroundColor: Colors.teal,
@@ -93,9 +93,13 @@ class _HomeState extends State<Home> {
 
   buildSwipeWidget({required Widget child, required Dog dog}) {
     return Swipe<Option>(
-      key: Key(dog.toString()),
+      key: Key(dog.url),
       opensToPosition: 0.6,
-      onController: (controller) => _swipeController = controller,
+      onController: (controller) {
+        setState(() {
+          _swipeController = controller;
+        });
+      },
       onOptionTap: (option) => onOptionTap(option, dog),
       onFling: (options) => options.first,
       child: child,
@@ -132,7 +136,7 @@ class _HomeState extends State<Home> {
         break;
       case Option.skip:
         setState(() {
-          dogFuture = repo.fetchDog();
+          _dogFuture = repo.fetchDog();
         });
         break;
     }

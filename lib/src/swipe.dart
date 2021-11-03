@@ -3,6 +3,7 @@ library swipe;
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -269,11 +270,15 @@ class _SwipeState<Option> extends State<Swipe<Option>>
 
   @override
   void didUpdateWidget(Swipe<Option> oldWidget) {
-    if (!identical(oldWidget.key, widget.key)) _initialize();
+    final equals = const IterableEquality().equals;
 
-    if (widget.optionsLeft != oldWidget.optionsLeft ||
-        widget.optionsRight != oldWidget.optionsRight) {
+    if (!equals(widget.optionsLeft, oldWidget.optionsLeft) ||
+        !equals(widget.optionsRight, oldWidget.optionsRight)) {
       _rebuildOptions();
+    }
+
+    if (!equals(widget.selectedOptions, oldWidget.selectedOptions)) {
+      _updateSelectedOptions();
     }
 
     super.didUpdateWidget(oldWidget);
@@ -293,19 +298,12 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   @override
   void initState() {
     animationController = AnimationController(vsync: this);
-    _initialize();
-    super.initState();
-  }
 
-  void _initialize() {
-    controller._clearSelectedOptions();
-
-    for (final option in widget.selectedOptions) {
-      controller.updateSelection(option: option, isSelected: true);
-    }
+    _updateSelectedOptions();
 
     if (widget.onController != null) {
-      widget.onController!(controller);
+      WidgetsBinding.instance!
+          .addPostFrameCallback((_) => widget.onController!(controller));
     }
 
     controller.addListener(() {
@@ -319,6 +317,16 @@ class _SwipeState<Option> extends State<Swipe<Option>>
     });
 
     _rebuildOptions();
+
+    super.initState();
+  }
+
+  void _updateSelectedOptions() {
+    controller._clearSelectedOptions();
+
+    for (final option in widget.selectedOptions) {
+      controller.updateSelection(option: option, isSelected: true);
+    }
   }
 
   void _rebuildOptions() {

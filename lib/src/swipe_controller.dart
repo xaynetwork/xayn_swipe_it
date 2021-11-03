@@ -35,6 +35,7 @@ class SwipeController<Option> extends ChangeNotifier {
   /// the presented [option].
   Future<void> swipeOpen(Option option) async {
     __optionToSelect = option;
+
     notifyListeners();
   }
 
@@ -44,12 +45,14 @@ class SwipeController<Option> extends ChangeNotifier {
 
   void _updateIsOpened(bool isOpened) {
     __isOpened = isOpened;
+
     notifyListeners();
   }
 
   /// Clear the set of selected options
   void _clearSelectedOptions() {
     _selectedOptions.clear();
+
     notifyListeners();
   }
 
