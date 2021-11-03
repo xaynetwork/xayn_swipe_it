@@ -1,10 +1,10 @@
-name: Deploy Example to Github Page
+name: Deploy example to gh-page
+
+env:
+  FLUTTER_VERSION: "2.5.2"
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -14,16 +14,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Install Flutter
-        uses: subosito/flutter-action@v1
+        uses: britannio/action-install-flutter@v1
         with:
-          flutter-version: '2.0.5'
+          version: $FLUTTER_VERSION
 
-      - name: Get dependencies
-        run: flutter pub get
+      - name: Get Packages
+        run: |
+          flutter pub get
+        working-directory: ./example
+
+      - name: Flutter format
+        run: |
+          flutter format ./ --set-exit-if-changed
+        working-directory: ./example
+
+      - name: Flutter Analyze
+        run: |
+          flutter analyze lib test
         working-directory: ./example
 
       - name: Build release project
