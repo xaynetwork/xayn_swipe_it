@@ -302,8 +302,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
     _updateSelectedOptions();
 
     if (widget.onController != null) {
-      WidgetsBinding.instance!
-          .addPostFrameCallback((_) => widget.onController!(controller));
+      widget.onController!(controller);
     }
 
     controller.addListener(() {

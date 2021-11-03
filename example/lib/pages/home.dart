@@ -92,26 +92,35 @@ class _HomeState extends State<Home> {
   }
 
   buildSwipeWidget({required Widget child, required Dog dog}) {
+    resolveOptionToDisplay(Option option) {
+      final controller = _swipeController;
+
+      if (controller == null) return option;
+
+      switch (option) {
+        case Option.like:
+          return controller.isSelected(Option.dislike)
+              ? Option.neutral
+              : option;
+        case Option.dislike:
+          return controller.isSelected(Option.like) ? Option.neutral : option;
+        default:
+          return option;
+      }
+    }
+
     return Swipe<Option>(
       key: Key(dog.url),
       opensToPosition: 0.6,
-      onController: (controller) {
-        setState(() {
-          _swipeController = controller;
-        });
-      },
+      onController: (controller) => _swipeController = controller,
       onOptionTap: (option) => onOptionTap(option, dog),
       onFling: (options) => options.first,
       child: child,
       borderRadius: const BorderRadius.all(Radius.circular(10)),
-      optionsLeft: (_swipeController?.isSelected(Option.dislike) ?? false)
-          ? [Option.neutral, Option.share]
-          : [Option.like, Option.share],
-      optionsRight: (_swipeController?.isSelected(Option.like) ?? false)
-          ? [Option.neutral, Option.skip]
-          : [Option.dislike, Option.skip],
+      optionsLeft: const [Option.like, Option.skip],
+      optionsRight: const [Option.dislike, Option.skip],
       optionBuilder: (_, option, __, isSelected) =>
-          optionWidget(option, isSelected),
+          optionWidget(resolveOptionToDisplay(option), isSelected),
     );
   }
 
