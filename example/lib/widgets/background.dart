@@ -29,7 +29,7 @@ class Background extends StatelessWidget {
           const Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.only(bottom: 15, left: 60, right: 60),
               child: Text(
                   'All the cute dog images are fetched from dog.ceo API ❤️'),
             ),

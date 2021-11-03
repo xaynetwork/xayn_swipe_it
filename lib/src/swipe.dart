@@ -215,7 +215,11 @@ class Swipe<Option> extends StatefulWidget {
     this.controller,
     this.onFling,
     this.autoToggleSelection = true,
-  }) : super(key: key);
+  })  : assert(0 < opensToPosition && opensToPosition <= 1,
+            'opensToPosition must be a fraction with value between 0 and 1.'),
+        assert(0 < minDragDistanceToOpen && minDragDistanceToOpen <= 1,
+            'minDragDistanceToOpen must be a fraction with value between 0 and 1.'),
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SwipeState<Option>();
@@ -320,6 +324,11 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   }
 
   void _updateSelectedOptions() {
+    assert(
+        widget.selectedOptions.every((element) =>
+            [...widget.optionsRight, ...widget.optionsLeft].contains(element)),
+        'selectedOptions has an option that doesn\'t exist in optionsLeft nor optionsRight.');
+
     controller._clearSelectedOptions();
 
     for (final option in widget.selectedOptions) {
