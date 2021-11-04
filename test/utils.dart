@@ -54,15 +54,8 @@ Future<void> swipeRight(WidgetTester tester) async {
 
 Future<void> flingLeft(WidgetTester tester) async {
   await tester.runAsync(() async {
-    await tester.fling(getSwipeableChild(), const Offset(-400, 0), 5000);
-    await tester.idle();
-  });
-}
-
-Future<void> flingRight(WidgetTester tester) async {
-  await tester.runAsync(() async {
-    await tester.fling(getSwipeableChild(), const Offset(400, 0), 5000);
-    await tester.idle();
+    await tester.fling(getSwipeableChild(), const Offset(-1000, 0), 5000);
+    await tester.pumpAndSettle();
   });
 }
 

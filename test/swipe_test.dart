@@ -94,15 +94,11 @@ void main() {
         expect(_controller.isOpened, isFalse);
 
         await flingLeft(tester);
-        await tester.pumpAndSettle();
-
-        expect(_controller.isOpened, isFalse);
         expect(_controller.isSelected(flingCondition(notSelectedOptions)!),
             isTrue);
         expect(_newlySelectedOption, isNotNull);
         expect(_newlySelectedOption, equals(notSelectedOptions.first));
       },
-      skip: true, //TODO: fix fling test
     );
 
     testWidgets(
