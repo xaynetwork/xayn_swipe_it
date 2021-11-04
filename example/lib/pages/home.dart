@@ -93,7 +93,7 @@ class _HomeState extends State<Home> {
   }
 
   buildSwipeWidget({required Widget child, required Dog dog}) {
-    resolveOptionToDisplay(Option option) {
+    Option resolveOptionToDisplay(Option option) {
       final controller = _swipeController;
 
       if (controller == null) return option;
@@ -114,14 +114,17 @@ class _HomeState extends State<Home> {
       key: Key(dog.url),
       opensToPosition: 0.6,
       controller: _swipeController,
-      onOptionTap: (option) => onOptionTap(option, dog),
+      onOptionTap: (option) => onOptionTap(resolveOptionToDisplay(option), dog),
       onFling: (options) => options.first,
       child: child,
       borderRadius: const BorderRadius.all(Radius.circular(10)),
       optionsLeft: const [Option.like, Option.share],
       optionsRight: const [Option.dislike, Option.skip],
-      optionBuilder: (_, option, __, isSelected) =>
-          optionWidget(resolveOptionToDisplay(option), isSelected),
+      optionBuilder: (_, option, __, isSelected) => optionWidget(
+        option,
+        isSelected,
+        displayedOption: resolveOptionToDisplay(option),
+      ),
     );
   }
 

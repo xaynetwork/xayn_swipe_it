@@ -21,7 +21,7 @@ class Background extends StatelessWidget {
             padding: EdgeInsets.symmetric(
               horizontal: isWideScreen
                   ? constraints.maxWidth / 12
-                  : constraints.maxWidth / 5,
+                  : constraints.maxWidth / 8,
               vertical: constraints.maxHeight / 12,
             ),
             child: child,
