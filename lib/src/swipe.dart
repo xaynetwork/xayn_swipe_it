@@ -270,7 +270,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
 
   @override
   void didUpdateWidget(Swipe<Option> oldWidget) {
-    final equals = const IterableEquality().equals;
+    final equals = IterableEquality<Option>().equals;
 
     if (!equals(widget.optionsLeft, oldWidget.optionsLeft) ||
         !equals(widget.optionsRight, oldWidget.optionsRight)) {
@@ -467,7 +467,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
     }
   }
 
-  Future<void> _closeOptions([_]) async {
+  Future<void> _closeOptions([PointerDownEvent? _]) async {
     if (controller.isOpened) {
       _stayOpenedTimer?.cancel();
 
@@ -550,7 +550,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
       };
 
   Future<void> _onOptionPresented() async {
-    await Future.delayed(widget.waitBeforeClosingDuration);
+    await Future<void>.delayed(widget.waitBeforeClosingDuration);
     await _closeOptions();
 
     final tappedEither = _tappedLeft ?? _tappedRight;

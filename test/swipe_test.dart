@@ -58,7 +58,7 @@ void main() {
     testWidgets(
       'fling',
       (WidgetTester tester) async {
-        Option flingCondition(options) => options.first;
+        Option? flingCondition(Iterable<Option> options) => options.first;
 
         Option? _newlySelectedOption;
         late Set<Option> notSelectedOptions = optionsRight.toSet();
@@ -97,8 +97,8 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(_controller.isOpened, isFalse);
-        expect(
-            _controller.isSelected(flingCondition(notSelectedOptions)), isTrue);
+        expect(_controller.isSelected(flingCondition(notSelectedOptions)!),
+            isTrue);
         expect(_newlySelectedOption, isNotNull);
         expect(_newlySelectedOption, equals(notSelectedOptions.first));
       },
