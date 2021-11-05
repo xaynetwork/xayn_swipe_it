@@ -587,8 +587,12 @@ class _SwipeState<Option> extends State<Swipe<Option>>
     setState(() {
       _rebuildOptions();
 
-      _tappedLeft = widget.optionsLeft.contains(option) ? option : null;
-      _tappedRight = widget.optionsRight.contains(option) ? option : null;
+      _tappedLeft = builtOptionsLeft.map((it) => it.option).contains(option)
+          ? option
+          : null;
+      _tappedRight = builtOptionsRight.map((it) => it.option).contains(option)
+          ? option
+          : null;
     });
   }
 }
