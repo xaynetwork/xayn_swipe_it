@@ -516,8 +516,9 @@ class _SwipeState<Option> extends State<Swipe<Option>>
         final velocity = details.primaryVelocity ?? .0;
         final didFling = velocity.abs() > 1000.0 &&
             _offset.dx.abs() > constraints.maxWidth / 2;
-        final options =
-            _offset.dx >= .0 ? widget.optionsLeft : widget.optionsRight;
+        final options = _offset.dx >= .0
+            ? builtOptionsLeft.map((it) => it.option)
+            : builtOptionsRight.map((it) => it.option);
 
         controller._updateIsOpened(isOpened);
 
