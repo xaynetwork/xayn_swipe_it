@@ -1,42 +1,12 @@
-## :bangbang: TO-DO list after creating repo from template:
-
- - [ ] Create new flutter project
- - [ ] [Organizing a library package](https://dart.dev/guides/libraries/create-library-packages#organizing-a-library-package)
- - [ ] Replace all `project_name` with the corrent one in this file
- - [ ] Replace `repo name` with the corrent one in:
-   - [ ] this filein the 
-   - [ ] [contributing](#contributing-construction_worker_woman) `create an issue` link
- - [ ] Remove useless parts of this README
- - [ ] Check license
- - [ ] Specifying a plugin’s supported platforms. More [here](https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms)
- - [ ] Uncomment CI scripts in `.github/workflows` 
-   - [ ] Set the latest `Flutter version` inside all of them
-- [ ] Setup `repository settings` - branch rules, PR reviews, etc. Sadly, but it's not copied from the template repo... 
- - [ ] to enable `codeCov` - please ask Felix to enable it for this repository
- - [ ] Try to keep README page SIMPLE but USEFUL
- - [ ] Chgeck for [PUB POINTS](https://pub.dev/help/scoring#pub-points)
-   - [ ] Follow Dart file conventions(https://pub.dev/help/scoring#follow-dart-file-conventions)  (this one done, but doubel-check it)
-   - [ ] [Provide documentation](https://pub.dev/help/scoring#provide-documentation)
-   - [ ] [Support multiple platforms](https://pub.dev/help/scoring#support-multiple-platforms)
-   - [ ] [Pass static analysis](https://pub.dev/help/scoring#pass-static-analysis)
-   - [ ] [Support up-to-date dependencies](https://pub.dev/help/scoring#support-up-to-date-dependencies)
-   - [ ] [View pub points report](https://pub.dev/help/scoring#calculating-pub-points-prior-to-publishing) before publishing. Make sure we have all possible score :muscle:
- - [ ] Remove this `TODO list` from the ReadMe, when all above are done :wink:
-
-----------
-
 # xayn_swipe_it
 
 [![Pub](https://img.shields.io/pub/v/xayn_swipe_it.svg)](https://pub.dartlang.org/packages/xayn_swipe_it)
 [![codecov](https://codecov.io/gh/xaynetwork/xayn_swipe_it/branch/main/graph/badge.svg)](https://codecov.io/gh/xaynetwork/xayn_swipe_it)
 [![Build Status](https://github.com/xaynetwork/xayn_swipe_it/actions/workflows/flutter_post_merge.yaml/badge.svg)](https://github.com/xaynetwork/xayn_swipe_it/actions)
 
-Short description of the project: What, Why, When and How :rofl:
-
+A performant, animated swipe widget with customizable options on the left and right allows swiping or flinging cards horizontally.
 
 ----------
-
-
 
 ## Table of content:
 
@@ -49,8 +19,6 @@ Short description of the project: What, Why, When and How :rofl:
  * [License :scroll:](#license-scroll)
 
 ----------
-
-
 
 ## Installing :hammer_and_wrench:
 
@@ -73,19 +41,107 @@ $ flutter pub get
 
 ## How to use :building_construction:
 
-Use case #1 (short description)
+Use case #1 (Basic usage)
 ```dart
-	// add some code with ninja-comments here
+/// Define your own options
+enum Option {like, dislike, share, skip, neutral}
 ```
 
-Use case #2 (short description)
 ```dart
-	// add some code with ninja-comments here
+/// Use it with `Swipe` widget
+Swipe<Option>(
+      onOptionTap: (option) => print(option.toString()),
+      optionsLeft: const [Option.like, Option.share],
+      optionsRight: const [Option.dislike, Option.skip],
+      optionBuilder: (context, option, index, isSelected) => 
+        SwipeOptionContainer(
+            option: option,
+            color: isSelected ? Colors.red : Colors.white,
+            child: Center(
+              child: Text(option.toString()),
+            ),
+          ),
+      child: Container(
+          child: Text('Swipe me!'),
+        ),
+    );
 ```
 
-Use case #3 (short description)
+Use case #2 (Controlling the `Swipe` widget)
 ```dart
-	// add some code with ninja-comments here
+/// Add to state
+late SwipeController<Option> _swipeController;
+
+/// Initialize the controller in initState
+  @override
+  void initState() {
+    super.initState();
+    _swipeController = SwipeController<Option>();
+  }
+```
+
+```dart
+/// Get `SwipeController` provided from `Swipe` widget 
+Swipe<Option>(
+      controller: _swipeController,
+    );
+```
+
+```dart
+/// Now you can:
+/// 1. Check if the `Swipe` is open and options are visible 
+    final bool isCardOpened = _swipeController.isOpened;
+
+/// 2. Check if a certain option is selected or not 
+    final bool isOptionLiked = _swipeController.isSelected(Option.like);
+
+/// 3. Manually select an option 
+    _swipeController.updateSelection(option: Option.like, isSelected: true);
+```
+
+
+Use case #3 (Flinging an option)
+```dart
+/// You can pass a condition of selecting an option in case of flinging the  `Swipe` 
+/// widget in on horizontal direction 
+	Swipe<Option>(
+      // Here we fling the first option in optionsLeft in case we flung right and vise versa 
+      onFling: (options) => options.first,
+      ...
+    );
+```
+
+Use case #4 (Disable options)
+```dart
+/// You can disable tapping on an option
+    Swipe<Option>( 
+        optionBuilder: (context, option, index, isSelected) => 
+          SwipeOptionContainer(
+              // Here you disable an option in case it's selected
+              isDisabled: isSelected,
+              ...
+              ),
+            ),
+      ...
+    );
+```
+
+Use case #5 (Passing a new option to optionBuilder)
+```dart
+/// You can use optionBuilder with options that are not passed to `optionsLeft` nor `optionsRight`
+/// and it will trigger `onOptionTap` with the new tapped option 
+    Swipe<Option>( 
+      optionsLeft: const [Option.like, Option.share],
+      optionsRight: const [Option.dislike, Option.skip],
+      optionBuilder: (context, option, index, isSelected) => 
+        SwipeOptionContainer(
+            option: Option.neutral,
+            ...
+          ),
+      // Tapping the option will trigger onOptionTap with `Option.neutral` 
+      onOptionTap: (option) => print(option.toString()),
+      ...
+    );
 ```
 
  - try out the [example](./example/lib/main.dart)
@@ -114,11 +170,30 @@ Curious how it will be looking? :smirk:
 
 ## Attributes :gear:
 
+### Swipe
 | attribute name   | Datatype		| Default Value | Description                                  |
 | ---------------- | -------------- | ------------- | -------------------------------------------- |
-| `child`          | `Widget`   	| `required`    | The widget below this widget in the tree.    |
-| `isEnabled`      | `bool`   	 	| `true`    	| Responsible for showing component as enabled.|
-| `key` 		   | `Key`          | `null`        | Controls how one widget replaces another widget in the tree. |
+| `child`          | `Widget`   	| `required`    | The content which should be the swipe target.|
+| `optionBuilder`  | `OptionBuilder<Option>`| `required`    | Can be used to customize a single `Option`.    |
+| `optionsLeft`          | `Iterable<Option>`   	| `[]`    | An `Iterable` representing the left-side `Option`s.    |
+| `optionsRight`          | `Iterable<Option>`   	| `[]`    | An `Iterable` representing the right-side `Option`s.    |
+| `selectedOptions`          | `Set<Option>`   	| `{}`    | Optionally used to pre-select any `Option` from either [optionsLeft] or [optionsRight].    |
+| `onOptionTap`          | `OnOptionTap<Option>?`   	| `null`    | A handler which triggers whenever an `Option` is tapped.    |
+| `swipeAreaBuilder`          | `WidgetBuilder?`   	| `null`    | By default, no UI elements are displayed to indicate that the child can indeed be swiped. If you want a custom UI to overlay the child, then provide this builder.    |
+| `gestureArea`          | `Rect`   	| `Rect.zero`    | By default, the whole of [child] is covered with a [GestureDetector], if you want a custom area, then provide this parameter. For example, you can only allow gestures on the middle-area of the child.   |
+| `closeAnimationDuration`          | `Duration`   	| `Duration(milliseconds: 240)`    | The `Duration` of the closing animation.    |
+| `waitBeforeClosingDuration`          | `Duration`   	| `Duration(milliseconds: 1200)`    | The `Duration` that this widget waits before it closes any open swipe options, after the user tapped on one.    |
+| `stayOpenedDuration`          | `Duration`   	| `Duration(seconds: 5)`    | The `Duration` of the idle stay open time.    |
+| `closeAnimationCurve`          | `Curve`   	| `Curves.easeOut`    | The `Curve` which is used for the closing animation.    |
+| `expandSingleOptionDuration`          | `Duration`   	| `Duration(milliseconds: 120)`    | The `Duration` for the transition animation when selecting an option. The option then transitions to overtake the fully available width, masking the other non-selected options.  |
+| `singleOptionAnimationCurve`          | `Curve`   	| `Curves.easeOut`    | The `Curve` which is used for the closing animation for single option.    |
+| `borderRadius`          | `BorderRadiusGeometry?`   	| `null`    | Can be used to show an optional border on the [child].    |
+| `clipBehavior`          | `Clip`   	| `Clip.antiAlias`    | Specifies the clipping of the [child].    |
+| `minDragDistanceToOpen`          | `double`   	| `.3`    | A value which defines how far the user needs to drag-open the swipe options. If not far enough, then on release the options close. If far enough, the options animate to fully open and the options are presented. Expects a value between 0.0 (zero width) and 1.0 (full available width).   |
+| `opensToPosition`          | `double`   	| `.8`    | A value indicating to what percentage the options should open to. Expects a value between 0.0 (zero width) and 1.0 (full available width).   |
+| `controller`          | `SwipeController<Option>?`   	| `null`    |  Provides the widget with a [SwipeController].    |
+| `onFling`          | `OnFling<Option>?`   	| `null`    | A handler which expects an `Option` in return. When the user flings, then this option will be auto-selected.    |
+| `autoToggleSelection`          | `bool`   	| `true`    | When true, then the [SwipeController] will notify the selection..    |
 
 [top :arrow_heading_up:](#xayn_swipe_it)
 
@@ -130,7 +205,7 @@ Curious how it will be looking? :smirk:
 
 Describe here well known problems and how they can be solved.
 
-[top :arrow_heading_up:](#project_name)
+[top :arrow_heading_up:](#xayn_swipe_it)
 
 ----------
 
@@ -152,7 +227,7 @@ We're more than happy to accept pull requests :muscle:
 
 
 ## License :scroll:
-**project_name** is licensed under `Apache 2`. View [license](../main/LICENSE).
+**xayn_swipe_it** is licensed under `Apache 2`. View [license](../main/LICENSE).
 
 [top :arrow_heading_up:](#xayn_swipe_it)
 
