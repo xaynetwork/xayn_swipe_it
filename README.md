@@ -150,6 +150,30 @@ Use case #5 (Passing a new option to optionBuilder)
     );
 ```
 
+Use case #6 (Alter like option to neutral in case it's selected)
+```dart
+    /// State variables
+    SwipeController<Option> _swipeController  = SwipeController<Option>();
+    bool isLiked = false;
+    
+    /// Add listener to changes in the SwipeController
+    _swipeController.addListener(() {
+        setState(() {
+          isLiked = _swipeController.isSelected(Option.like);
+        });
+    });
+```
+```dart
+    Swipe<Option>(
+      /// Pass the controller to the `Swipe` widget
+      controller: _swipeController,
+
+      /// If [isLiked] is true, then display a different list of Options
+      optionsLeft: isLiked ? [Option.neutral, Option.share] : [Option.like, Option.share],
+      ...
+    );
+```
+
 **Try out the [example](./example/lib/main.dart)**
 
 [top :arrow_heading_up:](#xayn_swipe_it)
@@ -169,8 +193,6 @@ Curious how it will be looking? :smirk:
 [top :arrow_heading_up:](#xayn_swipe_it)
 
 ----------
-
-
 
 ## Attributes :gear:
 
@@ -203,19 +225,6 @@ Curious how it will be looking? :smirk:
 
 ----------
 
-
-
-## Troubleshooting :thinking:
-
-### Altering `optionsLeft` or `optionsRight` in runtime
-If you're in the situation where you alter `optionsLeft` or `optionsRight` and depend on the `SwipeController` inside a `setState` to trigger a rebuild, you'll find that the widget will rebuild twice initially. To avoid that, it's better to change the options from `optionBuilder`. Check [the example app's `resolveOptionToDisplay` function](./example/lib/pages/home.dart).
-
-[top :arrow_heading_up:](#xayn_swipe_it)
-
-----------
-
-
-
 ## Contributing :construction_worker_woman:
 
 We're more than happy to accept pull requests :muscle:
@@ -228,8 +237,6 @@ We're more than happy to accept pull requests :muscle:
 [top :arrow_heading_up:](#xayn_swipe_it)
 
 ----------
-
-
 
 ## License :scroll:
 **xayn_swipe_it** is licensed under `Apache 2`. View [license](../main/LICENSE).
