@@ -66,6 +66,8 @@ const Offset _kSomewhatRight = Offset(1.0, .0);
 ///
 /// - [closeAnimationCurve] the `Curve` which is used for the closing animation.
 ///
+/// - [singleOptionAnimationCurve] the `Curve` which is used for the closing animation for single option.
+///
 /// - [borderRadius] can be used to show an optional border on the [child].
 ///
 /// - [clipBehavior] specifies the clipping of the [child], the default value
@@ -160,6 +162,9 @@ class Swipe<Option> extends StatefulWidget {
   /// the `Curve` which is used for the closing animation.
   final Curve closeAnimationCurve;
 
+  /// the `Curve` which is used for the closing animation for single option.
+  final Curve singleOptionAnimationCurve;
+
   /// can be used to show an optional border on the [child].
   final BorderRadiusGeometry? borderRadius;
 
@@ -206,6 +211,7 @@ class Swipe<Option> extends StatefulWidget {
     this.closeAnimationDuration = const Duration(milliseconds: 240),
     this.stayOpenedDuration = const Duration(seconds: 5),
     this.closeAnimationCurve = Curves.easeOut,
+    this.singleOptionAnimationCurve = Curves.easeOut,
     this.waitBeforeClosingDuration = const Duration(milliseconds: 1200),
     this.expandSingleOptionDuration = const Duration(milliseconds: 120),
     this.borderRadius,
@@ -415,6 +421,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
               highlightedOption: _tappedLeft,
               onOptionTap: _selectOption,
               onAnimationEnd: _onOptionPresented,
+              singleOptionAnimationCurve: widget.singleOptionAnimationCurve,
             ),
           ),
         ),
@@ -430,6 +437,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
                 highlightedOption: _tappedRight,
                 onOptionTap: _selectOption,
                 onAnimationEnd: _onOptionPresented,
+                singleOptionAnimationCurve: widget.singleOptionAnimationCurve,
               )),
         ),
         Positioned(
