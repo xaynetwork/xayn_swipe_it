@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/xaynetwork/xayn_swipe_it/branch/main/graph/badge.svg)](https://codecov.io/gh/xaynetwork/xayn_swipe_it)
 [![Build Status](https://github.com/xaynetwork/xayn_swipe_it/actions/workflows/flutter_post_merge.yaml/badge.svg)](https://github.com/xaynetwork/xayn_swipe_it/actions)
 
+<img width="200" height="400" src="../main/visuals/swipeIt.gif">
+
 A performant, animated swipe widget with customizable options on the left and right allows swiping or flinging cards horizontally.
 
 ----------
@@ -84,6 +86,7 @@ late SwipeController<Option> _swipeController;
 /// Get `SwipeController` provided from `Swipe` widget 
 Swipe<Option>(
       controller: _swipeController,
+      ...
     );
 ```
 
@@ -97,6 +100,9 @@ Swipe<Option>(
 
 /// 3. Manually select an option 
     _swipeController.updateSelection(option: Option.like, isSelected: true);
+
+/// 4. Manually swipe the card to make an option visible
+    await _swipeController.swipeOpen(Option.like);
 ```
 
 
@@ -144,7 +150,7 @@ Use case #5 (Passing a new option to optionBuilder)
     );
 ```
 
- - try out the [example](./example/lib/main.dart)
+**Try out the [example](./example/lib/main.dart)**
 
 [top :arrow_heading_up:](#xayn_swipe_it)
 
@@ -156,11 +162,9 @@ Curious how it will be looking? :smirk:
 
  |                          |                          |
  | ------------------------ | ------------------------ |
- | case description #1      | case description #2      |
- | <img width="280" src="../main/visuals/coding.gif"> | <img width="280" src="../main/visuals/building.gif"> |
+ | Select an option after swiping the card     | Fling to select an option      |
+ | <img width="200" height="400" src="../main/visuals/swipeItTap.gif"> | <img width="200" height="400" src="../main/visuals/swipeItFling.gif"> |
  |                          |                          |
- | case description #3      | case description #4      |
- | <img width="280" src="../main/visuals/tea.gif"> | <img width="280" src="../main/visuals/cosmos.gif"> |
 
 [top :arrow_heading_up:](#xayn_swipe_it)
 
@@ -203,7 +207,8 @@ Curious how it will be looking? :smirk:
 
 ## Troubleshooting :thinking:
 
-Describe here well known problems and how they can be solved.
+### Altering `optionsLeft` or `optionsRight` in runtime
+If you're in the situation where you alter `optionsLeft` or `optionsRight` and depend on the `SwipeController` inside a `setState` to trigger a rebuild, you'll find that the widget will rebuild twice initially. To avoid that, it's better to change the options from `optionBuilder`. Check [the example app's `resolveOptionToDisplay` function](./example/lib/pages/home.dart).
 
 [top :arrow_heading_up:](#xayn_swipe_it)
 
