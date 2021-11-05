@@ -21,7 +21,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   DogRepository get repo => widget.dogRepository;
 
-  SwipeController<Option>? _swipeController;
+  late SwipeController<Option> _swipeController;
   Future<Dog>? _dogFuture;
 
   @override
@@ -95,12 +95,12 @@ class _HomeState extends State<Home> {
 
   buildSwipeWidget({required Widget child, required Dog dog}) {
     Option? resolveOptionToDisplay(Option option) {
-      final controller = _swipeController;
+      // final controller = _swipeController;
 
-      if (controller == null) return option;
+      // if (controller == null) return option;
 
-      final isOptionLiked = controller.isSelected(Option.like);
-      final isOptionDisliked = controller.isSelected(Option.dislike);
+      final isOptionLiked = _swipeController.isSelected(Option.like);
+      final isOptionDisliked = _swipeController.isSelected(Option.dislike);
 
       switch (option) {
         case Option.like:
@@ -142,18 +142,18 @@ class _HomeState extends State<Home> {
   void onOptionTap(Option option, Dog dog) async {
     switch (option) {
       case Option.neutral:
-        _swipeController?.updateSelection(
+        _swipeController.updateSelection(
             option: Option.dislike, isSelected: false);
-        _swipeController?.updateSelection(
+        _swipeController.updateSelection(
             option: Option.like, isSelected: false);
         await repo.removeDog(dog);
         break;
       case Option.like:
-        _swipeController?.updateSelection(option: option, isSelected: true);
+        _swipeController.updateSelection(option: option, isSelected: true);
         await repo.addDog(dog);
         break;
       case Option.dislike:
-        _swipeController?.updateSelection(option: option, isSelected: true);
+        _swipeController.updateSelection(option: option, isSelected: true);
         break;
       case Option.share:
         shareUrl(dog.url);
