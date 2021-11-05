@@ -4,9 +4,9 @@
 [![codecov](https://codecov.io/gh/xaynetwork/xayn_swipe_it/branch/main/graph/badge.svg)](https://codecov.io/gh/xaynetwork/xayn_swipe_it)
 [![Build Status](https://github.com/xaynetwork/xayn_swipe_it/actions/workflows/flutter_post_merge.yaml/badge.svg)](https://github.com/xaynetwork/xayn_swipe_it/actions)
 
-<img width="200" height="400" src="../main/visuals/swipeIt.gif">
+<img width="300" src="visuals/swipeIt.gif">
 
-A performant, animated swipe widget with customizable options on the left and right allows swiping or flinging cards horizontally.
+A performant, animated swipe widget with left and right customizable options that you can swipe or fling horizontally.
 
 ----------
 
@@ -163,7 +163,7 @@ Curious how it will be looking? :smirk:
  |                          |                          |
  | ------------------------ | ------------------------ |
  | Select an option after swiping the card     | Fling to select an option      |
- | <img width="200" height="400" src="../main/visuals/swipeItTap.gif"> | <img width="200" height="400" src="../main/visuals/swipeItFling.gif"> |
+ | <img width="280" src="visuals/swipeItTap.gif"> | <img width="280" src="visuals/swipeItFling.gif"> |
  |                          |                          |
 
 [top :arrow_heading_up:](#xayn_swipe_it)
