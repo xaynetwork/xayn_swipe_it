@@ -95,10 +95,6 @@ class _HomeState extends State<Home> {
 
   buildSwipeWidget({required Widget child, required Dog dog}) {
     Option? resolveOptionToDisplay(Option option) {
-      // final controller = _swipeController;
-
-      // if (controller == null) return option;
-
       final isOptionLiked = _swipeController.isSelected(Option.like);
       final isOptionDisliked = _swipeController.isSelected(Option.dislike);
 

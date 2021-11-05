@@ -81,10 +81,6 @@ void main() {
             optionsLeft: optionsLeft,
             optionsRight: optionsRight,
             child: swipeableChild,
-            closeAnimationDuration: animationDuration,
-            stayOpenedDuration: animationDuration,
-            waitBeforeClosingDuration: animationDuration,
-            expandSingleOptionDuration: animationDuration,
           ),
         );
 

@@ -58,5 +58,3 @@ Future<void> flingLeft(WidgetTester tester) async {
     await tester.pumpAndSettle();
   });
 }
-
-Duration animationDuration = const Duration(milliseconds: 1);
