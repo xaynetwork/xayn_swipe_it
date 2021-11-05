@@ -23,7 +23,7 @@ typedef OnOptionTap<Option> = void Function(Option);
 
 /// A builder which can optionally be implemented, if you desire a custom
 /// widget to display an `Option`.
-typedef OptionBuilder<Option> = SwipeOptionContainer<Option> Function(
+typedef OptionBuilder<Option> = SwipeOptionContainer<Option>? Function(
     BuildContext, Option, int, bool);
 
 const Offset _kSomewhatLeft = Offset(-1.0, .0);
@@ -454,17 +454,18 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   }
 
   Iterable<SwipeOptionContainer<Option>> _buildOptions(
-      Iterable<Option> options) sync* {
+      Iterable<Option> options) {
     var index = 0;
 
-    for (var option in options) {
-      yield widget.optionBuilder(
-        context,
-        option,
-        index++,
-        controller.isSelected(option),
-      );
-    }
+    return options
+        .map((option) => widget.optionBuilder(
+              context,
+              option,
+              index++,
+              controller.isSelected(option),
+            ))
+        .where((it) => it != null)
+        .cast<SwipeOptionContainer<Option>>();
   }
 
   Future<void> _closeOptions([PointerDownEvent? _]) async {

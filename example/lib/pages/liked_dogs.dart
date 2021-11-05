@@ -88,7 +88,7 @@ class _LikedDogsState extends State<LikedDogs> {
       optionsLeft: const [Option.share],
       optionsRight: const [Option.dislike],
       optionBuilder: (_, option, __, isSelected) =>
-          optionWidget(option, isSelected),
+          optionWidget(option, isSelected, false),
     );
   }
 

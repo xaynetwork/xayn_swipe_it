@@ -4,17 +4,16 @@ import 'package:xayn_swipe_it_example/models/option.dart';
 
 SwipeOptionContainer<Option> optionWidget(
   Option option,
-  bool isSelected, {
-  Option? displayedOption,
-}) {
-  final _displayedOption = displayedOption ?? option;
+  bool isSelected,
+  bool isDisabled,
+) {
   return SwipeOptionContainer(
     option: option,
-    color: isSelected
-        ? Color.lerp(_displayedOption.color, Colors.teal, 0.5)!
-        : _displayedOption.color,
+    isDisabled: isDisabled,
+    color:
+        isSelected ? Color.lerp(option.color, Colors.teal, 0.5)! : option.color,
     child: Center(
-      child: Icon(_displayedOption.icon),
+      child: Icon(option.icon),
     ),
   );
 }

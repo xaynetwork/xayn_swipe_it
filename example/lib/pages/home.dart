@@ -27,6 +27,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     _swipeController = SwipeController<Option>();
     _dogFuture = repo.fetchDog();
   }
@@ -93,18 +94,19 @@ class _HomeState extends State<Home> {
   }
 
   buildSwipeWidget({required Widget child, required Dog dog}) {
-    Option resolveOptionToDisplay(Option option) {
+    Option? resolveOptionToDisplay(Option option) {
       final controller = _swipeController;
 
       if (controller == null) return option;
 
+      final isOptionLiked = controller.isSelected(Option.like);
+      final isOptionDisliked = controller.isSelected(Option.dislike);
+
       switch (option) {
         case Option.like:
-          return controller.isSelected(Option.dislike)
-              ? Option.neutral
-              : option;
+          return isOptionDisliked ? Option.neutral : option;
         case Option.dislike:
-          return controller.isSelected(Option.like) ? Option.neutral : option;
+          return isOptionLiked ? Option.neutral : option;
         default:
           return option;
       }
@@ -114,17 +116,26 @@ class _HomeState extends State<Home> {
       key: Key(dog.url),
       opensToPosition: 0.6,
       controller: _swipeController,
-      onOptionTap: (option) => onOptionTap(resolveOptionToDisplay(option), dog),
+      onOptionTap: (option) => onOptionTap(option, dog),
       onFling: (options) => options.first,
       child: child,
       borderRadius: const BorderRadius.all(Radius.circular(10)),
       optionsLeft: const [Option.like, Option.share],
       optionsRight: const [Option.dislike, Option.skip],
-      optionBuilder: (_, option, __, isSelected) => optionWidget(
-        option,
-        isSelected,
-        displayedOption: resolveOptionToDisplay(option),
-      ),
+      optionBuilder: (_, option, __, isSelected) {
+        final actualOption = resolveOptionToDisplay(option);
+
+        if (actualOption == null) return null;
+
+        final isDisabled =
+            isSelected && (option == Option.like || option == Option.dislike);
+
+        return optionWidget(
+          actualOption,
+          isSelected,
+          isDisabled,
+        );
+      },
     );
   }
 
@@ -153,7 +164,5 @@ class _HomeState extends State<Home> {
         });
         break;
     }
-
-    setState(() {});
   }
 }

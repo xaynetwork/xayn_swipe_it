@@ -120,11 +120,13 @@ class _SwipeOptionsRowState<Option> extends State<SwipeOptionsRow<Option>>
       left: left.floorToDouble(),
       width: width.ceilToDouble(),
       height: constraints.maxHeight,
-      child: Listener(
-        behavior: HitTestBehavior.translucent,
-        onPointerDown: (_) => widget.onOptionTap!(container.option),
-        child: child,
-      ),
+      child: container.isDisabled
+          ? child
+          : Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (_) => widget.onOptionTap!(container.option),
+              child: child,
+            ),
     );
   }
 }
