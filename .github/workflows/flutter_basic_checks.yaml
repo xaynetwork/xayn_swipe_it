@@ -22,12 +22,19 @@ jobs:
       - name: Get Packages
         run: |
           flutter pub get
+          
       - name: Flutter format
         run: |
           flutter format ./ --set-exit-if-changed
+
       - name: Flutter Analyze
         run: |
           flutter analyze lib test
+
       - name: Run Tests
         run: |
-          flutter test
+          flutter test --coverage
+
+      - name: Upload coverage to codecov
+        run: curl -s https://codecov.io/bash -t faf027c6-16e8-4b2d-b3a4-d240284fcfe9
+        shell: bash
