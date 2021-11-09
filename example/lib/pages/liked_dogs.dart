@@ -96,6 +96,10 @@ class _LikedDogsState extends State<LikedDogs> {
     switch (option) {
       case Option.dislike:
         repo.removeDog(dog);
+
+        // rebuild the dogs grid after disliking to remove the displayed
+        // disliked dog
+        setState(() {});
         break;
       case Option.share:
         shareUrl(dog.url);
@@ -103,7 +107,5 @@ class _LikedDogsState extends State<LikedDogs> {
       default:
         break;
     }
-
-    setState(() {});
   }
 }

@@ -52,21 +52,21 @@ enum Option {like, dislike, share, skip, neutral}
 ```dart
 /// Use it with `Swipe` widget
 Swipe<Option>(
-      onOptionTap: (option) => print(option.toString()),
-      optionsLeft: const [Option.like, Option.share],
-      optionsRight: const [Option.dislike, Option.skip],
-      optionBuilder: (context, option, index, isSelected) => 
-        SwipeOptionContainer(
-            option: option,
-            color: isSelected ? Colors.red : Colors.white,
-            child: Center(
-              child: Text(option.toString()),
-            ),
-          ),
-      child: Container(
-          child: Text('Swipe me!'),
+  onOptionTap: (option) => print(option.toString()),
+  optionsLeft: const [Option.like, Option.share],
+  optionsRight: const [Option.dislike, Option.skip],
+  optionBuilder: (context, option, index, isSelected) => 
+    SwipeOptionContainer(
+        option: option,
+        color: isSelected ? Colors.red : Colors.white,
+        child: Center(
+          child: Text(option.toString()),
         ),
-    );
+      ),
+  child: Container(
+      child: Text('Swipe me!'),
+    ),
+);
 ```
 
 Use case #2 (Controlling the `Swipe` widget)
@@ -75,34 +75,34 @@ Use case #2 (Controlling the `Swipe` widget)
 late SwipeController<Option> _swipeController;
 
 /// Initialize the controller in initState
-  @override
-  void initState() {
-    super.initState();
-    _swipeController = SwipeController<Option>();
-  }
+@override
+void initState() {
+  super.initState();
+  _swipeController = SwipeController<Option>();
+}
 ```
 
 ```dart
-/// Get `SwipeController` provided from `Swipe` widget 
+/// Pass the `SwipeController` to the `Swipe` widget 
 Swipe<Option>(
-      controller: _swipeController,
-      ...
-    );
+  controller: _swipeController,
+  ...
+);
 ```
 
 ```dart
 /// Now you can:
 /// 1. Check if the `Swipe` is open and options are visible 
-    final bool isCardOpened = _swipeController.isOpened;
+  final bool isCardOpened = _swipeController.isOpened;
 
 /// 2. Check if a certain option is selected or not 
-    final bool isOptionLiked = _swipeController.isSelected(Option.like);
+  final bool isOptionLiked = _swipeController.isSelected(Option.like);
 
 /// 3. Manually select an option 
-    _swipeController.updateSelection(option: Option.like, isSelected: true);
+  _swipeController.updateSelection(option: Option.like, isSelected: true);
 
 /// 4. Manually swipe the card to make an option visible
-    await _swipeController.swipeOpen(Option.like);
+  await _swipeController.swipeOpen(Option.like);
 ```
 
 
@@ -110,68 +110,68 @@ Use case #3 (Flinging an option)
 ```dart
 /// You can pass a condition of selecting an option in case of flinging the  `Swipe` 
 /// widget in on horizontal direction 
-	Swipe<Option>(
-      // Here we fling the first option in optionsLeft in case we flung right and vise versa 
-      onFling: (options) => options.first,
-      ...
-    );
+Swipe<Option>(
+  // Here we fling the first option in optionsLeft in case we flung right and vise versa 
+  onFling: (options) => options.first,
+  ...
+);
 ```
 
 Use case #4 (Disable options)
 ```dart
 /// You can disable tapping on an option
-    Swipe<Option>( 
-        optionBuilder: (context, option, index, isSelected) => 
-          SwipeOptionContainer(
-              // Here you disable an option in case it's selected
-              isDisabled: isSelected,
-              ...
-              ),
-            ),
-      ...
-    );
+Swipe<Option>( 
+    optionBuilder: (context, option, index, isSelected) => 
+      SwipeOptionContainer(
+          // Here you disable an option in case it's selected
+          isDisabled: isSelected,
+          ...
+          ),
+        ),
+  ...
+);
 ```
 
 Use case #5 (Passing a new option to optionBuilder)
 ```dart
 /// You can use optionBuilder with options that are not passed to `optionsLeft` nor `optionsRight`
 /// and it will trigger `onOptionTap` with the new tapped option 
-    Swipe<Option>( 
-      optionsLeft: const [Option.like, Option.share],
-      optionsRight: const [Option.dislike, Option.skip],
-      optionBuilder: (context, option, index, isSelected) => 
-        SwipeOptionContainer(
-            option: Option.neutral,
-            ...
-          ),
-      // Tapping the option will trigger onOptionTap with `Option.neutral` 
-      onOptionTap: (option) => print(option.toString()),
-      ...
-    );
+Swipe<Option>( 
+  optionsLeft: const [Option.like, Option.share],
+  optionsRight: const [Option.dislike, Option.skip],
+  optionBuilder: (context, option, index, isSelected) => 
+    SwipeOptionContainer(
+        option: Option.neutral,
+        ...
+      ),
+  // Tapping the option will trigger onOptionTap with `Option.neutral` 
+  onOptionTap: (option) => print(option.toString()),
+  ...
+);
 ```
 
 Use case #6 (Alter like option to neutral in case it's selected)
 ```dart
-    /// State variables
-    SwipeController<Option> _swipeController  = SwipeController<Option>();
-    bool isLiked = false;
-    
-    /// Add listener to changes in the SwipeController
-    _swipeController.addListener(() {
-        setState(() {
-          isLiked = _swipeController.isSelected(Option.like);
-        });
+/// State variables
+SwipeController<Option> _swipeController  = SwipeController<Option>();
+bool isLiked = false;
+
+/// Add listener to changes in the SwipeController
+_swipeController.addListener(() {
+    setState(() {
+      isLiked = _swipeController.isSelected(Option.like);
     });
+});
 ```
 ```dart
-    Swipe<Option>(
-      /// Pass the controller to the `Swipe` widget
-      controller: _swipeController,
+Swipe<Option>(
+  /// Pass the controller to the `Swipe` widget
+  controller: _swipeController,
 
-      /// If [isLiked] is true, then display a different list of Options
-      optionsLeft: isLiked ? [Option.neutral, Option.share] : [Option.like, Option.share],
-      ...
-    );
+  /// If [isLiked] is true, then display a different list of Options
+  optionsLeft: isLiked ? [Option.neutral, Option.share] : [Option.like, Option.share],
+  ...
+);
 ```
 
 **Try out the [example](./example/lib/main.dart)**
