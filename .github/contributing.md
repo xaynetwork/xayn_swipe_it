@@ -4,7 +4,7 @@
 
 ### Create a new issue :raising_hand_man: :raising_hand_woman:
 
-The easiest way to get involved is to create a [new issue](https://github.com/xaynetwork/flutter-open-source-repo-template/issues/new) when you 
+The easiest way to get involved is to create a [new issue](https://github.com/xaynetwork/xayn_swipe_it/issues/new) when you 
   - spot a bug
   - documentation is incomplete or out of date
   - you identify an implementation problem.
