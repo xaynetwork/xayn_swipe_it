@@ -22,11 +22,15 @@ class SwipeOptionsRow<Option> extends StatefulWidget {
   /// The amount of time in which the animation plays.
   final Duration expandSingleOptionDuration;
 
+  /// the `Curve` which is used for the closing animation.
+  final Curve singleOptionAnimationCurve;
+
   /// Creates a new `SwipeOptionsRow`.
   const SwipeOptionsRow({
     Key? key,
     required this.children,
     required this.expandSingleOptionDuration,
+    required this.singleOptionAnimationCurve,
     this.onOptionTap,
     this.highlightedOption,
     this.onAnimationEnd,
@@ -67,7 +71,7 @@ class _SwipeOptionsRowState<Option> extends State<SwipeOptionsRow<Option>>
     if (widget.highlightedOption != null) {
       if (animationController.value < 1.0) {
         animationController
-            .animateTo(1.0, curve: Curves.easeOut)
+            .animateTo(1.0, curve: widget.singleOptionAnimationCurve)
             .whenComplete(() {
           if (widget.onAnimationEnd != null) {
             widget.onAnimationEnd!();
@@ -75,7 +79,8 @@ class _SwipeOptionsRowState<Option> extends State<SwipeOptionsRow<Option>>
         });
       }
     } else if (oldWidget.highlightedOption != null) {
-      animationController.animateTo(.0, curve: Curves.easeOut);
+      animationController.animateTo(.0,
+          curve: widget.singleOptionAnimationCurve);
     } else {
       animationController.value = .0;
     }
@@ -120,11 +125,13 @@ class _SwipeOptionsRowState<Option> extends State<SwipeOptionsRow<Option>>
       left: left.floorToDouble(),
       width: width.ceilToDouble(),
       height: constraints.maxHeight,
-      child: Listener(
-        behavior: HitTestBehavior.translucent,
-        onPointerDown: (_) => widget.onOptionTap!(container.option),
-        child: child,
-      ),
+      child: container.isDisabled
+          ? child
+          : Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (_) => widget.onOptionTap!(container.option),
+              child: child,
+            ),
     );
   }
 }

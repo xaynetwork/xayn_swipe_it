@@ -3,6 +3,7 @@ library swipe;
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,10 +11,6 @@ import 'package:xayn_swipe_it/src/swipe_option_container.dart';
 import 'package:xayn_swipe_it/src/swipe_options_row.dart';
 
 part 'swipe_controller.dart';
-
-/// A handler which passes a reference to the [SwipeController] which
-/// is associated to this widget.
-typedef OnController<Option> = void Function(SwipeController<Option>);
 
 /// A handler which triggers when the user applies a `fling` gesture.
 /// It expects an `Option` as return value, and present a `List` of
@@ -26,7 +23,7 @@ typedef OnOptionTap<Option> = void Function(Option);
 
 /// A builder which can optionally be implemented, if you desire a custom
 /// widget to display an `Option`.
-typedef OptionBuilder<Option> = SwipeOptionContainer<Option> Function(
+typedef OptionBuilder<Option> = SwipeOptionContainer<Option>? Function(
     BuildContext, Option, int, bool);
 
 const Offset _kSomewhatLeft = Offset(-1.0, .0);
@@ -68,6 +65,8 @@ const Offset _kSomewhatRight = Offset(1.0, .0);
 ///   fully available width, masking the other non-selected options.
 ///
 /// - [closeAnimationCurve] the `Curve` which is used for the closing animation.
+///
+/// - [singleOptionAnimationCurve] the `Curve` which is used for the closing animation for single option.
 ///
 /// - [borderRadius] can be used to show an optional border on the [child].
 ///
@@ -163,6 +162,9 @@ class Swipe<Option> extends StatefulWidget {
   /// the `Curve` which is used for the closing animation.
   final Curve closeAnimationCurve;
 
+  /// the `Curve` which is used for the closing animation for single option.
+  final Curve singleOptionAnimationCurve;
+
   /// can be used to show an optional border on the [child].
   final BorderRadiusGeometry? borderRadius;
 
@@ -185,8 +187,8 @@ class Swipe<Option> extends StatefulWidget {
   /// 1.0 represents the full available width, while 0.0 is zero width.
   final double opensToPosition;
 
-  /// presents the [SwipeController] that is attached to this widget.
-  final OnController<Option>? onController;
+  /// provides the widget with a [SwipeController].
+  final SwipeController<Option>? controller;
 
   /// a handler which expects an `Option` in return.
   /// when the user flings, then this option will be auto-selected.
@@ -209,16 +211,21 @@ class Swipe<Option> extends StatefulWidget {
     this.closeAnimationDuration = const Duration(milliseconds: 240),
     this.stayOpenedDuration = const Duration(seconds: 5),
     this.closeAnimationCurve = Curves.easeOut,
+    this.singleOptionAnimationCurve = Curves.easeOut,
     this.waitBeforeClosingDuration = const Duration(milliseconds: 1200),
     this.expandSingleOptionDuration = const Duration(milliseconds: 120),
     this.borderRadius,
     this.clipBehavior = Clip.antiAlias,
     this.minDragDistanceToOpen = .3,
     this.opensToPosition = .8,
-    this.onController,
+    this.controller,
     this.onFling,
     this.autoToggleSelection = true,
-  }) : super(key: key);
+  })  : assert(0 < opensToPosition && opensToPosition <= 1,
+            'opensToPosition must be a fraction with value between 0 and 1.'),
+        assert(0 < minDragDistanceToOpen && minDragDistanceToOpen <= 1,
+            'minDragDistanceToOpen must be a fraction with value between 0 and 1.'),
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SwipeState<Option>();
@@ -226,11 +233,10 @@ class Swipe<Option> extends StatefulWidget {
 
 class _SwipeState<Option> extends State<Swipe<Option>>
     with SingleTickerProviderStateMixin {
-  final SwipeController<Option> controller = SwipeController<Option>();
+  late final SwipeController<Option> controller;
   late final AnimationController animationController;
   List<SwipeOptionContainer<Option>> builtOptionsLeft = const [],
       builtOptionsRight = const [];
-  bool _isOpened = false;
   Offset _offset = const Offset(.0, .0);
   Timer? _stayOpenedTimer;
   Option? _tappedLeft, _tappedRight;
@@ -270,9 +276,15 @@ class _SwipeState<Option> extends State<Swipe<Option>>
 
   @override
   void didUpdateWidget(Swipe<Option> oldWidget) {
-    if (widget.optionsLeft != oldWidget.optionsLeft ||
-        widget.optionsRight != oldWidget.optionsRight) {
+    final equals = IterableEquality<Option>().equals;
+
+    if (!equals(widget.optionsLeft, oldWidget.optionsLeft) ||
+        !equals(widget.optionsRight, oldWidget.optionsRight)) {
       _rebuildOptions();
+    }
+
+    if (!equals(widget.selectedOptions, oldWidget.selectedOptions)) {
+      _updateSelectedOptions();
     }
 
     super.didUpdateWidget(oldWidget);
@@ -280,7 +292,12 @@ class _SwipeState<Option> extends State<Swipe<Option>>
 
   @override
   void dispose() {
-    controller.dispose();
+    if (widget.controller == null) {
+      controller.dispose();
+    } else {
+      controller.removeListener(_onController);
+    }
+
     animationController.dispose();
     _stayOpenedTimer?.cancel();
 
@@ -293,27 +310,36 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   void initState() {
     animationController = AnimationController(vsync: this);
 
-    for (final option in widget.selectedOptions) {
-      controller.updateSelection(option: option, isSelected: true);
-    }
+    controller = widget.controller ?? SwipeController<Option>();
+    controller.addListener(_onController);
 
-    if (widget.onController != null) {
-      widget.onController!(controller);
-    }
-
-    controller.addListener(() {
-      final optionToSelect = controller._optionToSelect;
-
-      if (optionToSelect != null) {
-        _openAndSelectOption(optionToSelect);
-      } else {
-        setState(_rebuildOptions);
-      }
-    });
-
+    _updateSelectedOptions();
     _rebuildOptions();
 
     super.initState();
+  }
+
+  void _onController() {
+    final optionToSelect = controller._optionToSelect;
+
+    if (optionToSelect != null) {
+      _openAndSelectOption(optionToSelect);
+    } else {
+      setState(_rebuildOptions);
+    }
+  }
+
+  void _updateSelectedOptions() {
+    assert(
+        widget.selectedOptions.every((element) =>
+            [...widget.optionsRight, ...widget.optionsLeft].contains(element)),
+        'selectedOptions has an option that doesn\'t exist in optionsLeft nor optionsRight.');
+
+    controller._clearSelectedOptions();
+
+    for (final option in widget.selectedOptions) {
+      controller.updateSelection(option: option, isSelected: true);
+    }
   }
 
   void _rebuildOptions() {
@@ -343,7 +369,8 @@ class _SwipeState<Option> extends State<Swipe<Option>>
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onHorizontalDragUpdate: (details) {
-          final isNotIdle = _isOpened || animationController.isAnimating;
+          final isNotIdle =
+              controller.isOpened || animationController.isAnimating;
           final canSwipeLeftToRight =
               widget.optionsLeft.isEmpty && details.delta.dx > .0;
           final canSwipeRightToLeft =
@@ -394,6 +421,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
               highlightedOption: _tappedLeft,
               onOptionTap: _selectOption,
               onAnimationEnd: _onOptionPresented,
+              singleOptionAnimationCurve: widget.singleOptionAnimationCurve,
             ),
           ),
         ),
@@ -409,6 +437,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
                 highlightedOption: _tappedRight,
                 onOptionTap: _selectOption,
                 onAnimationEnd: _onOptionPresented,
+                singleOptionAnimationCurve: widget.singleOptionAnimationCurve,
               )),
         ),
         Positioned(
@@ -433,21 +462,22 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   }
 
   Iterable<SwipeOptionContainer<Option>> _buildOptions(
-      Iterable<Option> options) sync* {
+      Iterable<Option> options) {
     var index = 0;
 
-    for (var option in options) {
-      yield widget.optionBuilder(
-        context,
-        option,
-        index++,
-        controller.isSelected(option),
-      );
-    }
+    return options
+        .map((option) => widget.optionBuilder(
+              context,
+              option,
+              index++,
+              controller.isSelected(option),
+            ))
+        .where((it) => it != null)
+        .cast<SwipeOptionContainer<Option>>();
   }
 
-  Future<void> _closeOptions([_]) async {
-    if (_isOpened) {
+  Future<void> _closeOptions([PointerDownEvent? _]) async {
+    if (controller.isOpened) {
       _stayOpenedTimer?.cancel();
 
       await animationController.animateTo(
@@ -456,9 +486,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
         curve: widget.closeAnimationCurve,
       );
 
-      setState(() {
-        _isOpened = false;
-      });
+      controller._updateIsOpened(false);
     }
   }
 
@@ -469,10 +497,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
       _offset = _kSomewhatLeft;
     }
 
-    setState(() {
-      _isOpened = true;
-    });
-
+    controller._updateIsOpened(true);
     await animationController.animateTo(1.0,
         duration: const Duration(milliseconds: 350));
 
@@ -482,7 +507,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
   Future<void> Function(DragEndDetails) _onDragEnd(BoxConstraints constraints,
           {Option? optionToSelect}) =>
       (DragEndDetails details) async {
-        if (_isOpened) {
+        if (controller.isOpened) {
           return;
         }
 
@@ -491,10 +516,11 @@ class _SwipeState<Option> extends State<Swipe<Option>>
         final velocity = details.primaryVelocity ?? .0;
         final didFling = velocity.abs() > 1000.0 &&
             _offset.dx.abs() > constraints.maxWidth / 2;
-        final options =
-            _offset.dx >= .0 ? widget.optionsLeft : widget.optionsRight;
+        final options = _offset.dx >= .0
+            ? builtOptionsLeft.map((it) => it.option)
+            : builtOptionsRight.map((it) => it.option);
 
-        setState(() => _isOpened = isOpened);
+        controller._updateIsOpened(isOpened);
 
         final targetPosition = isOpened ? widget.opensToPosition : .0;
 
@@ -534,7 +560,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
       };
 
   Future<void> _onOptionPresented() async {
-    await Future.delayed(widget.waitBeforeClosingDuration);
+    await Future<void>.delayed(widget.waitBeforeClosingDuration);
     await _closeOptions();
 
     final tappedEither = _tappedLeft ?? _tappedRight;
@@ -571,8 +597,12 @@ class _SwipeState<Option> extends State<Swipe<Option>>
     setState(() {
       _rebuildOptions();
 
-      _tappedLeft = widget.optionsLeft.contains(option) ? option : null;
-      _tappedRight = widget.optionsRight.contains(option) ? option : null;
+      _tappedLeft = builtOptionsLeft.map((it) => it.option).contains(option)
+          ? option
+          : null;
+      _tappedRight = builtOptionsRight.map((it) => it.option).contains(option)
+          ? option
+          : null;
     });
   }
 }
