@@ -247,7 +247,9 @@ class _SwipeState<Option> extends State<Swipe<Option>>
       return AnimatedBuilder(
         animation: animationController,
         builder: (context, gestureDetector) {
-          final opacity = math.sqrt(animationController.value);
+          final openRatio =
+              math.sqrt(animationController.value / widget.opensToPosition);
+          final opacity = openRatio < 1.0 ? openRatio : 1.0;
           final bgColor = _resolveBackgroundColor(opacity);
           final left = _offset.dx > .0
                   ? animationController.value * constraints.maxWidth
