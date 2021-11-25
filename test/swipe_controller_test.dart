@@ -14,8 +14,8 @@ void main() {
   group('swipe controller: ', () {
     testWidgets('update selection to select', (WidgetTester tester) async {
       Option? _newlySelectedOption;
-      late Set<Option> selectedOptions = optionsLeft.toSet();
-      late Set<Option> notSelectedOptions = optionsRight.toSet();
+      final selectedOptions = optionsLeft.toSet();
+      final notSelectedOptions = optionsRight.toSet();
       await standaloneWidgetSetup(
         tester,
         widget: Swipe<Option>(
@@ -53,7 +53,7 @@ void main() {
     });
 
     testWidgets('update selection to un select', (WidgetTester tester) async {
-      late Set<Option> selectedOptions = optionsLeft.toSet();
+      final selectedOptions = optionsLeft.toSet();
       await standaloneWidgetSetup(
         tester,
         widget: Swipe<Option>(
