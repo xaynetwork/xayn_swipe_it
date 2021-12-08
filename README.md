@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/xaynetwork/xayn_swipe_it/branch/main/graph/badge.svg)](https://codecov.io/gh/xaynetwork/xayn_swipe_it)
 [![Build Status](https://github.com/xaynetwork/xayn_swipe_it/actions/workflows/flutter_post_merge.yaml/badge.svg)](https://github.com/xaynetwork/xayn_swipe_it/actions)
 
-<img width="300" src="https://github.com/xaynetwork/xayn_swipe_it/blob/main/visuals/swipeIt.gif">
+<img width="300" src="https://raw.githubusercontent.com/xaynetwork/xayn_swipe_it/main/visuals/swipeIt.gif">
 
 A performant, animated swipe widget with left and right customizable options that you can swipe or fling horizontally.
 
@@ -187,7 +187,7 @@ Curious how it will be looking? :smirk:
  |                          |                          |
  | ------------------------ | ------------------------ |
  | Select an option after swiping the card     | Fling to select an option      |
- | <img width="280" src="https://github.com/xaynetwork/xayn_swipe_it/blob/main/visuals/swipeItTap.gif"> | <img width="280" src="https://github.com/xaynetwork/xayn_swipe_it/blob/main/visuals/swipeItFling.gif"> |
+ | <img width="280" src="https://raw.githubusercontent.com/xaynetwork/xayn_swipe_it/main/visuals/swipeItTap.gif"> | <img width="280" src="https://raw.githubusercontent.com/xaynetwork/xayn_swipe_it/main/visuals/swipeItFling.gif"> |
  |                          |                          |
 
 [top :arrow_heading_up:](#xayn_swipe_it)
