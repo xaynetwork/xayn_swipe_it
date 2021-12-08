@@ -12,10 +12,10 @@ void main() {
   });
 
   group('swipe controller: ', () {
-    testWidgets('update selection', (WidgetTester tester) async {
+    testWidgets('update selection to select', (WidgetTester tester) async {
       Option? _newlySelectedOption;
-      late Set<Option> selectedOptions = optionsLeft.toSet();
-      late Set<Option> notSelectedOptions = optionsRight.toSet();
+      final selectedOptions = optionsLeft.toSet();
+      final notSelectedOptions = optionsRight.toSet();
       await standaloneWidgetSetup(
         tester,
         widget: Swipe<Option>(
@@ -50,6 +50,35 @@ void main() {
       expect(_controller.isSelected(notSelectedOptions.first), isTrue);
       expect(_newlySelectedOption, isNotNull);
       expect(_newlySelectedOption, equals(notSelectedOptions.first));
+    });
+
+    testWidgets('update selection to un select', (WidgetTester tester) async {
+      final selectedOptions = optionsLeft.toSet();
+      await standaloneWidgetSetup(
+        tester,
+        widget: Swipe<Option>(
+          key: const Key('updateSelection'),
+          controller: _controller,
+          optionBuilder: (_, option, index, isSelected) {
+            return SwipeOptionContainer<Option>(
+              option: option,
+              color: Colors.white,
+              child: Text(option.toString()),
+            );
+          },
+          optionsLeft: optionsLeft,
+          optionsRight: optionsRight,
+          selectedOptions: selectedOptions,
+          child: swipeableChild,
+        ),
+      );
+
+      expect(_controller.isSelected(selectedOptions.first), isTrue);
+      _controller.updateSelection(
+        option: selectedOptions.first,
+        isSelected: false,
+      );
+      expect(_controller.isSelected(selectedOptions.first), isFalse);
     });
 
     testWidgets('swipe open a not selected option',

@@ -14,12 +14,12 @@ void main() {
   group('swipe widget: ', () {
     testWidgets('tapping an option', (WidgetTester tester) async {
       Option? _newlySelectedOption;
-      late Option notSelectedOption = optionsRight.first;
+      final notSelectedOption = optionsRight.first;
       const Key notSelectedKey = Key('notSelectedKey');
       await standaloneWidgetSetup(
         tester,
         widget: Swipe<Option>(
-          key: const Key('fling'),
+          key: const Key('tap option'),
           controller: _controller,
           optionBuilder: (_, option, index, isSelected) {
             if (notSelectedOption == option && isSelected) {
@@ -43,16 +43,23 @@ void main() {
 
       await swipeLeft(tester);
       expect(_controller.isOpened, isTrue);
-
       final notSelected = find.byKey(notSelectedKey);
+      expect(notSelected, findsOneWidget);
+
+      await tester.ensureVisible(notSelected);
+      await tester.pump();
+      await tester.tap(notSelected);
+      expect(_controller.isSelected(notSelectedOption), isTrue);
+      expect(_newlySelectedOption, isNotNull);
+      expect(_newlySelectedOption, equals(notSelectedOption));
+
+      await swipeLeft(tester);
+      expect(_controller.isOpened, isTrue);
       expect(notSelected, findsOneWidget);
       await tester.ensureVisible(notSelected);
       await tester.pump();
       await tester.tap(notSelected);
-
-      expect(_controller.isSelected(notSelectedOption), isTrue);
-      expect(_newlySelectedOption, isNotNull);
-      expect(_newlySelectedOption, equals(notSelectedOption));
+      expect(_controller.isSelected(notSelectedOption), isFalse);
     });
 
     testWidgets(
@@ -61,7 +68,7 @@ void main() {
         Option? flingCondition(Iterable<Option> options) => options.first;
 
         Option? _newlySelectedOption;
-        late Set<Option> notSelectedOptions = optionsRight.toSet();
+        final notSelectedOptions = optionsRight.toSet();
         await standaloneWidgetSetup(
           tester,
           widget: Swipe<Option>(
