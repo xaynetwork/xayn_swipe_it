@@ -4,9 +4,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:xayn_swipe_it/src/swipe_option_container.dart';
 import 'package:xayn_swipe_it/src/swipe_options_row.dart';
 
