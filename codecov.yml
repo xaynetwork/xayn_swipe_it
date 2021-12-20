@@ -9,8 +9,7 @@ coverage:
       default:
         # basic
         target: 0%
-        threshold: 0%
-        base: 0%
+        threshold: 1%
         # advanced
         branches: null
         if_no_uploads: error
