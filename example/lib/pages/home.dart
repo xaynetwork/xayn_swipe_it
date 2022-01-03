@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xayn_swipe_it/xayn_swipe_it.dart';
 import 'package:xayn_swipe_it_example/pages/liked_dogs.dart';
