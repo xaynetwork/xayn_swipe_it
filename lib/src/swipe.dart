@@ -26,6 +26,7 @@ typedef OptionBuilder<Option> = SwipeOptionContainer<Option>? Function(
 
 const Offset _kSomewhatLeft = Offset(-1.0, .0);
 const Offset _kSomewhatRight = Offset(1.0, .0);
+const double _kMinFlingVelocity = 1000.0;
 
 /// Wraps its children and adds UI handlers to swipe them to the left and/or right.
 ///
@@ -195,6 +196,9 @@ class Swipe<Option> extends StatefulWidget {
   /// when true, then the [SwipeController] will notify the selection.
   final bool autoToggleSelection;
 
+  /// The minimum velocity on drag end for the gesture to be treated as a fling.
+  final double minFlingVelocity;
+
   /// The main constructor to create a new `Swipe` widget.
   const Swipe({
     Key? key,
@@ -219,6 +223,7 @@ class Swipe<Option> extends StatefulWidget {
     this.controller,
     this.onFling,
     this.autoToggleSelection = true,
+    this.minFlingVelocity = _kMinFlingVelocity,
   })  : assert(0 < opensToPosition && opensToPosition <= 1,
             'opensToPosition must be a fraction with value between 0 and 1.'),
         assert(0 < minDragDistanceToOpen && minDragDistanceToOpen <= 1,
@@ -514,7 +519,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
         final isOpened =
             animationController.value >= widget.minDragDistanceToOpen;
         final velocity = details.primaryVelocity ?? .0;
-        final didFling = velocity.abs() > 1000.0 &&
+        final didFling = velocity.abs() > widget.minFlingVelocity &&
             _offset.dx.abs() > constraints.maxWidth / 2;
         final options = _offset.dx >= .0
             ? builtOptionsLeft.map((it) => it.option)

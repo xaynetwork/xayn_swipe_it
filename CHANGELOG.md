@@ -1,3 +1,7 @@
+# 1.0.2
+
+* Adds minFlingVelocity for the Swipe Widget
+
 # 1.0.1
 
 * Minor updates to documentation.
