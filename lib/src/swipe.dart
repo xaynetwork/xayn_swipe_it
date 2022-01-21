@@ -531,7 +531,8 @@ class _SwipeState<Option> extends State<Swipe<Option>>
             animationController.value >= widget.minDragDistanceToOpen;
         final velocity = details.primaryVelocity ?? .0;
         final didFling = velocity.abs() > widget.minFlingVelocity &&
-            _offset.dx.abs() > constraints.maxWidth / 3;
+            _offset.dx.abs() >
+                constraints.maxWidth * widget.minFlingDragDistanceFraction;
         final options = _offset.dx >= .0
             ? builtOptionsLeft.map((it) => it.option)
             : builtOptionsRight.map((it) => it.option);
