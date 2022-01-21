@@ -56587,7 +56587,7 @@ if(A.a(e.d,"controller").b){s=1
 break}o=A.a(A.a(e.e,"animationController").y,"_value")
 e.a.toString
 n=a.b
-m=Math.abs(n==null?0:n)>1000&&Math.abs(e.x.a)>p.b.b/2
+m=Math.abs(n==null?0:n)>1000&&Math.abs(e.x.a)>p.b.b*0.5
 l=e.$ti.c
 if(e.x.a>=0){k=e.f
 j=new A.ad(k,new A.a4p(e),A.a6(k).i("@<1>").a8(l).i("ad<1,2>"))}else{k=e.r
