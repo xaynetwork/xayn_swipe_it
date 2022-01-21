@@ -27,6 +27,7 @@ typedef OptionBuilder<Option> = SwipeOptionContainer<Option>? Function(
 const Offset _kSomewhatLeft = Offset(-1.0, .0);
 const Offset _kSomewhatRight = Offset(1.0, .0);
 const double _kMinFlingVelocity = 1000.0;
+const double _kMinFlingDragDistanceFraction = .5;
 
 /// Wraps its children and adds UI handlers to swipe them to the left and/or right.
 ///
@@ -199,6 +200,10 @@ class Swipe<Option> extends StatefulWidget {
   /// The minimum velocity on drag end for the gesture to be treated as a fling.
   final double minFlingVelocity;
 
+  /// The minimum fraction of the width needed to activate a fling check.
+  /// For example, if .5, then you need to at least drag for half of the screen.
+  final double minFlingDragDistanceFraction;
+
   /// The main constructor to create a new `Swipe` widget.
   const Swipe({
     Key? key,
@@ -224,10 +229,16 @@ class Swipe<Option> extends StatefulWidget {
     this.onFling,
     this.autoToggleSelection = true,
     this.minFlingVelocity = _kMinFlingVelocity,
+    this.minFlingDragDistanceFraction = _kMinFlingDragDistanceFraction,
   })  : assert(0 < opensToPosition && opensToPosition <= 1,
             'opensToPosition must be a fraction with value between 0 and 1.'),
         assert(0 < minDragDistanceToOpen && minDragDistanceToOpen <= 1,
             'minDragDistanceToOpen must be a fraction with value between 0 and 1.'),
+        assert(minFlingVelocity >= .0, 'minFlingVelocity must be at least .0.'),
+        assert(
+            0 < minFlingDragDistanceFraction &&
+                minFlingDragDistanceFraction <= 1,
+            'minFlingDragDistanceFraction must be a fraction with value between 0 and 1.'),
         super(key: key);
 
   @override
@@ -520,7 +531,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
             animationController.value >= widget.minDragDistanceToOpen;
         final velocity = details.primaryVelocity ?? .0;
         final didFling = velocity.abs() > widget.minFlingVelocity &&
-            _offset.dx.abs() > constraints.maxWidth / 2;
+            _offset.dx.abs() > constraints.maxWidth / 3;
         final options = _offset.dx >= .0
             ? builtOptionsLeft.map((it) => it.option)
             : builtOptionsRight.map((it) => it.option);
