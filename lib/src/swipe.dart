@@ -536,6 +536,7 @@ class _SwipeState<Option> extends State<Swipe<Option>>
         final options = _offset.dx >= .0
             ? builtOptionsLeft.map((it) => it.option)
             : builtOptionsRight.map((it) => it.option);
+        final isPresentingSingleOption = isOpened && options.length == 1;
 
         controller._updateIsOpened(isOpened);
 
@@ -559,7 +560,8 @@ class _SwipeState<Option> extends State<Swipe<Option>>
 
         bool didSelectOption = false;
 
-        if (didFling && (optionToSelect != null || widget.onFling != null)) {
+        if ((didFling || isPresentingSingleOption) &&
+            (optionToSelect != null || widget.onFling != null)) {
           final selectedOption = optionToSelect ?? widget.onFling!(options);
 
           if (selectedOption != null) {
